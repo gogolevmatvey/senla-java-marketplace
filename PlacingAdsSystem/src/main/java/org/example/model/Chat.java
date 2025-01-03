@@ -1,0 +1,83 @@
+package org.example.model;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "chats")
+public class Chat {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "chat_id")
+    private Long id;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ads_id")
+    private Ads ads;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "buyer_id")
+    private User buyer;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "seller_id")
+    private User seller;
+    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Message> messages;
+
+    public Chat(Ads ads, User buyer, User seller) {
+        this.ads = ads;
+        this.buyer = buyer;
+        this.seller = seller;
+        this.messages = new ArrayList<Message>();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Ads getAds() {
+        return ads;
+    }
+
+    public void setAds(Ads ads) {
+        this.ads = ads;
+    }
+
+    public User getBuyer() {
+        return buyer;
+    }
+
+    public void setBuyer(User buyer) {
+        this.buyer = buyer;
+    }
+
+    public User getSeller() {
+        return seller;
+    }
+
+    public void setSeller(User seller) {
+        this.seller = seller;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
+
+    @Override
+    public String toString() {
+        return "Chat{" +
+                "id=" + id +
+                ", ads=" + ads +
+                ", buyer=" + buyer +
+                ", seller=" + seller +
+                ", messages=" + messages +
+                '}';
+    }
+}

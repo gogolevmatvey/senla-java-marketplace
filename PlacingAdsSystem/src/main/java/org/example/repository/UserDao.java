@@ -1,0 +1,35 @@
+package org.example.repository;
+
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.TypedQuery;
+import org.example.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.NoResultException;
+
+@Repository
+public class UserDao extends GenericDao<User> {
+    private static final Logger logger = LoggerFactory.getLogger(UserDao.class);
+
+    public UserDao(EntityManagerFactory entityManagerFactory) {
+        super(User.class, entityManagerFactory);
+    }
+
+    public User findUserByUsername(String username) {
+        try {
+            String hql = "FROM User WHERE username = :username";
+            TypedQuery<User> query = entityManager.createQuery(hql, User.class);
+            query.setParameter("username", username);
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            logger.error("Пользователь {} не найден: {}", username, e.getMessage());
+            return null;
+        } catch (Exception e) {
+            logger.error("Ошибка при поиске пользователя {}: {}", username, e.getMessage());
+            return null;
+        }
+    }
+}

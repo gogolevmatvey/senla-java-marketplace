@@ -1,0 +1,81 @@
+package org.example.model;
+
+import javax.persistence.*;
+import java.time.LocalDate;
+
+@Entity
+@Table(name = "comments")
+public class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "comment_id")
+    private Long id;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User user;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "advertisement_id")
+    private Ads ads;
+    @Column(name = "comment_content", nullable = false)
+    private String content;
+    @Column(name = "comment_creation_date")
+    private LocalDate creationDate;
+
+    public Comment(User user, Ads ads, String content) {
+        this.user = user;
+        this.ads = ads;
+        this.content = content;
+        this.creationDate = LocalDate.now();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Ads getAds() {
+        return ads;
+    }
+
+    public void setAds(Ads ads) {
+        this.ads = ads;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public LocalDate getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", user=" + user +
+                ", ads=" + ads +
+                ", content='" + content + '\'' +
+                ", creationDate=" + creationDate +
+                '}';
+    }
+}
