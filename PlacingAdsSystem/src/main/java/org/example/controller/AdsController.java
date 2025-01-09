@@ -5,10 +5,8 @@ import org.example.model.Ads;
 import org.example.service.AdsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/ads")
@@ -21,7 +19,7 @@ public class AdsController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createAds(@RequestBody AdsDto adsDto) {
-        Ads createdAds = adsService.createAds(adsDto);
+        AdsDto createdAds = adsService.createAds(adsDto);
         return ResponseEntity.ok(createdAds);
     }
 }

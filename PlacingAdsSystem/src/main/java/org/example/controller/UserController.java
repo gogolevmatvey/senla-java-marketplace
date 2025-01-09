@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.dto.EmailDto;
+import org.example.dto.UserDto;
 import org.example.dto.UsernameDto;
 import org.example.exceptions.UserAlreadyExistsException;
 import org.example.model.User;
@@ -20,19 +21,19 @@ public class UserController {
 
     @PatchMapping("/username")
     public ResponseEntity<?> changeUsername(@RequestBody UsernameDto usernameDto) throws UserAlreadyExistsException {
-        User updatedUser = userService.changeUsername(usernameDto.getNewUsername());
+        UserDto updatedUser = userService.changeUsername(usernameDto.getNewUsername());
         return ResponseEntity.ok(updatedUser);
     }
 
     @PatchMapping("/email")
     public ResponseEntity<?> changeEmail(@RequestBody EmailDto emailDto) throws UserAlreadyExistsException {
-        User updatedUser = userService.changeEmail(emailDto.getNewEmail());
+        UserDto updatedUser = userService.changeEmail(emailDto.getNewEmail());
         return ResponseEntity.ok(updatedUser);
     }
 
     @PatchMapping("/avatar")
     public ResponseEntity<?> uploadAvatar(@RequestParam("avatar") MultipartFile avatar) {
-        User updatedUser = userService.setAvatar(avatar);
+        UserDto updatedUser = userService.setAvatar(avatar);
         return ResponseEntity.ok(updatedUser);
     }
 }

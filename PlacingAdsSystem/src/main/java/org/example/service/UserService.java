@@ -1,6 +1,8 @@
 package org.example.service;
 
+import org.example.dto.UserDto;
 import org.example.exceptions.UserAlreadyExistsException;
+import org.example.mapper.UserMapper;
 import org.example.model.User;
 import org.example.model.UserRole;
 import org.example.repository.UserDao;
@@ -20,13 +22,15 @@ import java.util.regex.Pattern;
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class UserService {
     private final UserDao userDao;
+    private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     // RFC 5322 Official Standard
     private static final Pattern EMAIL_PATTERN = Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
 
-    public UserService(UserDao userDao, PasswordEncoder passwordEncoder) {
+    public UserService(UserDao userDao, UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
+        this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -39,7 +43,7 @@ public class UserService {
         return user;
     }
 
-    public User changeUsername(String newUsername) throws UserAlreadyExistsException {
+    public UserDto changeUsername(String newUsername) throws UserAlreadyExistsException {
         User currentUser = getCurrentUser();
         User userWithNewUsername = userDao.findUserByUsername(newUsername);
         if (userWithNewUsername != null) {
@@ -49,17 +53,17 @@ public class UserService {
         currentUser.setUsername(newUsername);
         userDao.update(currentUser);
         logger.info("Username changed: {} -> {}", oldUsername, newUsername);
-        return currentUser;
+        return userMapper.toDto(currentUser);
     }
 
-    public User changeEmail(String newEmail) throws UserAlreadyExistsException {
+    public UserDto changeEmail(String newEmail) throws UserAlreadyExistsException {
         User currentUser = getCurrentUser();
         validateEmail(newEmail);
         String oldEmail = currentUser.getEmail();
         currentUser.setEmail(newEmail);
         userDao.update(currentUser);
         logger.info("Email changed for user {}: {} -> {}", currentUser.getUsername(), oldEmail, newEmail);
-        return currentUser;
+        return userMapper.toDto(currentUser);
     }
 
     private User getCurrentUser() {
@@ -89,7 +93,7 @@ public class UserService {
         return user;
     }
 
-    public User setAvatar(MultipartFile avatar) {
+    public UserDto setAvatar(MultipartFile avatar) {
         validateImageFormat(avatar);
         User currentUser = getCurrentUser();
         try {
@@ -100,7 +104,7 @@ public class UserService {
         } catch (IOException e) {
             logger.error("Failed to set avatar file for user {}: {}", currentUser.getUsername(), e.getMessage());
         }
-        return currentUser;
+        return userMapper.toDto(currentUser);
     }
 
     private void validateImageFormat(MultipartFile file) {

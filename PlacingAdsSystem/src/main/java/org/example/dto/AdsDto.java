@@ -1,12 +1,17 @@
 package org.example.dto;
 
+import org.example.model.AdsStatus;
+
 import java.io.Serializable;
+import java.time.LocalDate;
 
 public class AdsDto implements Serializable {
     private String title;
     private String category;
     private String description;
     private Double price;
+    private LocalDate creationDate;
+    private AdsStatus status;
 
     public AdsDto() {
     }
@@ -48,5 +53,21 @@ public class AdsDto implements Serializable {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public LocalDate getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public AdsStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AdsStatus status) {
+        this.status = status;
     }
 }

@@ -3,6 +3,7 @@ package org.example.service;
 import org.example.dto.AdsDto;
 import org.example.mapper.AdsMapper;
 import org.example.model.Ads;
+import org.example.model.AdsStatus;
 import org.example.model.User;
 import org.example.repository.AdsDao;
 import org.example.repository.UserDao;
@@ -12,6 +13,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.time.LocalDate;
 
 @Service
 @Transactional
@@ -41,19 +46,32 @@ public class AdsService {
         logger.info("Объявление {} создано пользователем {}.", newAds, currentUser.getUsername());
     }
 
-    public Ads createAds(AdsDto adsDto) {
+    public AdsDto createAds(AdsDto adsDto) {
         Ads newAds = adsMapper.toEntity(adsDto);
         validateAds(newAds);
         User currentUser = getCurrentUser();
         newAds.setUser(currentUser);
+        newAds.setCreationDate(LocalDate.now());
+        newAds.setStatus(AdsStatus.ACTIVE);
         adsDao.create(newAds);
-        logger.info("Объявление {} добавлено в БД.", newAds);
-        return newAds;
+        logger.info("Ads {} is added to DB.", newAds);
+        return adsMapper.toDto(newAds);
     }
 
-    public User getCurrentUser() {
+    private User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return userDao.findUserByUsername(username);
+    }
+
+    private void validateImage(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("Main image is required");
+        }
+
+        String contentType = file.getContentType();
+        if (contentType == null || (!contentType.equals("image/jpeg") && !contentType.equals("image/png"))) {
+            throw new IllegalArgumentException("Only JPEG and PNG image formats are allowed");
+        }
     }
 
     public Ads getAdsById(int id) {

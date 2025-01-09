@@ -14,6 +14,8 @@ public interface AdsMapper {
     @Mapping(target = "category", source = "category")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "price", source = "price")
+    @Mapping(target = "creationDate", source = "creationDate")
+    @Mapping(target = "status", source = "status")
     AdsDto toDto(Ads ads);
 
     List<AdsDto> toDtoList(List<Ads> adsList);
