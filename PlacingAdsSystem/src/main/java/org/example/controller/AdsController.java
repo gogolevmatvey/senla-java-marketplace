@@ -1,6 +1,8 @@
 package org.example.controller;
 
 import org.example.dto.AdsDto;
+import org.example.dto.DescriptionDto;
+import org.example.dto.TitleDto;
 import org.example.model.Ads;
 import org.example.service.AdsService;
 import org.springframework.http.ResponseEntity;
@@ -21,5 +23,23 @@ public class AdsController {
     public ResponseEntity<?> createAds(@RequestBody AdsDto adsDto) {
         AdsDto createdAds = adsService.createAds(adsDto);
         return ResponseEntity.ok(createdAds);
+    }
+
+    @PatchMapping("/{adsId}/main-image")
+    public ResponseEntity<?> setMainImage(@PathVariable("adsId") Long id, @RequestParam("image") MultipartFile image) {
+        AdsDto adsDto = adsService.setMainImage(id, image);
+        return ResponseEntity.ok(adsDto);
+    }
+
+    @PatchMapping("/{adsId}/title")
+    public ResponseEntity<?> changeTitle(@PathVariable("adsId") Long adsId, @RequestBody TitleDto titleDto) {
+        AdsDto updatedAds = adsService.changeTitle(adsId, titleDto.getTitle());
+        return ResponseEntity.ok(updatedAds);
+    }
+
+    @PatchMapping("/{adsId}/description")
+    public ResponseEntity<?> updateDescription(@PathVariable("adsId") Long adsId, @RequestBody DescriptionDto descriptionDto) {
+        AdsDto updatedAds = adsService.changeDescription(adsId, descriptionDto.getDescription());
+        return ResponseEntity.ok(updatedAds);
     }
 }

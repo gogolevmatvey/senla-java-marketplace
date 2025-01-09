@@ -6,12 +6,15 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 public class AdsDto implements Serializable {
+    private Long id;
     private String title;
     private String category;
     private String description;
     private Double price;
     private LocalDate creationDate;
+    private LocalDate promotionEndDate;
     private AdsStatus status;
+    private byte[] mainImage;
 
     public AdsDto() {
     }
@@ -21,6 +24,14 @@ public class AdsDto implements Serializable {
         this.category = category;
         this.description = description;
         this.price = price;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -63,11 +74,27 @@ public class AdsDto implements Serializable {
         this.creationDate = creationDate;
     }
 
+    public LocalDate getPromotionEndDate() {
+        return promotionEndDate;
+    }
+
+    public void setPromotionEndDate(LocalDate promotionEndDate) {
+        this.promotionEndDate = promotionEndDate;
+    }
+
     public AdsStatus getStatus() {
         return status;
     }
 
     public void setStatus(AdsStatus status) {
         this.status = status;
+    }
+
+    public byte[] getMainImage() {
+        return mainImage;
+    }
+
+    public void setMainImage(byte[] mainImage) {
+        this.mainImage = mainImage;
     }
 }

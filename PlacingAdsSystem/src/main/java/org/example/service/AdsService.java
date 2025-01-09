@@ -74,25 +74,108 @@ public class AdsService {
         }
     }
 
-    public Ads getAdsById(int id) {
-        return adsDao.read(id);
-    }
-
-    public void validateAds(Ads ads) {
+    private void validateAds(Ads ads) {
         if (ads.getTitle() == null || ads.getTitle().trim().isEmpty()) {
-            throw new IllegalArgumentException("Заголовок не может быть пустым.");
+            throw new IllegalArgumentException("Title can't be empty");
         }
         if (ads.getTitle().length() > titleMaxLength) {
-            throw new IllegalArgumentException("Заголовок не може быть длиеннее " + titleMaxLength + " символов.");
+            throw new IllegalArgumentException("Title can't be longer than " + titleMaxLength + " characters");
         }
         if (ads.getDescription() == null || ads.getDescription().trim().isEmpty()) {
-            throw new IllegalArgumentException("Описание не может быть пустым.");
+            throw new IllegalArgumentException("Description can't be empty");
         }
         if (ads.getDescription().length() > descriptionMaxLength) {
-            throw new IllegalArgumentException("Описание не может быть длиннее " + descriptionMaxLength + " символов.");
+            throw new IllegalArgumentException("Description can't be longer than " + descriptionMaxLength + " characters");
         }
         if (ads.getPrice() < 0) {
             throw new IllegalArgumentException("Цена не может быть меньше нуля.");
         }
+    }
+
+    public AdsDto changeTitle(Long adsId, String newTitle) {
+        Ads ads = adsDao.read(adsId);
+        if (ads == null) {
+            throw new IllegalArgumentException("Advertisement not found with id: " + adsId);
+        }
+
+        User currentUser = getCurrentUser();
+        if (!ads.getUser().getId().equals(currentUser.getId())) {
+            throw new IllegalStateException("User does not have permission to modify this advertisement");
+        }
+
+        validateTitle(newTitle);
+
+        ads.setTitle(newTitle);
+        adsDao.update(ads);
+        logger.info("Title updated for advertisement id: {}", adsId);
+
+        return adsMapper.toDto(ads);
+    }
+
+    private void validateTitle(String title) {
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("Title can't be empty");
+        }
+        if (title.length() > titleMaxLength) {
+            throw new IllegalArgumentException("Title can't be longer than " + titleMaxLength + " characters");
+        }
+
+    }
+
+    public AdsDto changeDescription(Long adsId, String newDescription) {
+        Ads ads = adsDao.read(adsId);
+        if (ads == null) {
+            throw new IllegalArgumentException("Advertisement not found with id: " + adsId);
+        }
+
+        User currentUser = getCurrentUser();
+        if (!ads.getUser().getId().equals(currentUser.getId())) {
+            throw new IllegalStateException("User does not have permission to modify this advertisement");
+        }
+
+        validateDescription(newDescription);
+
+        ads.setDescription(newDescription);
+        adsDao.update(ads);
+        logger.info("Description updated for advertisement id: {}", adsId);
+
+        return adsMapper.toDto(ads);
+    }
+
+    private void validateDescription(String description) {
+        if (description == null || description.trim().isEmpty()) {
+            throw new IllegalArgumentException("Description can't be empty");
+        }
+        if (description.length() > descriptionMaxLength) {
+            throw new IllegalArgumentException("Description can't be longer than " + descriptionMaxLength + " characters");
+        }
+    }
+
+    public Ads getAdsById(int id) {
+        return adsDao.read(id);
+    }
+
+    public AdsDto setMainImage(Long adsId, MultipartFile image) {
+        validateImage(image);
+        Ads ads = adsDao.read(adsId);
+
+        if (ads == null) {
+            throw new IllegalArgumentException("Advertisement not found with id: " + adsId);
+        }
+
+        User currentUser = getCurrentUser();
+        if (!ads.getUser().getId().equals(currentUser.getId())) {
+            throw new IllegalStateException("User doesn't have permission to modify this advertisement");
+        }
+
+        try {
+            ads.setMainImage(image.getBytes());
+            adsDao.update(ads);
+            logger.info("Main image updated for advertisement id: {}", adsId);
+        } catch (IOException e) {
+            logger.error("Error processing image upload for advertisement id: {}", adsId, e);
+            throw new RuntimeException("Failed to process image upload", e);
+        }
+        return adsMapper.toDto(ads);
     }
 }

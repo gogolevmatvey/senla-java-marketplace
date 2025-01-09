@@ -10,12 +10,15 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AdsMapper {
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "title", source = "title")
     @Mapping(target = "category", source = "category")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "price", source = "price")
     @Mapping(target = "creationDate", source = "creationDate")
+    @Mapping(target = "promotionEndDate", source = "promotionEndDate")
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "mainImage", source = "mainImage")
     AdsDto toDto(Ads ads);
 
     List<AdsDto> toDtoList(List<Ads> adsList);
