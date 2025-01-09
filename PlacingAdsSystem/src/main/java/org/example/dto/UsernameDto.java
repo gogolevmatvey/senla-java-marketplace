@@ -1,6 +1,8 @@
 package org.example.dto;
 
-public class UsernameDto {
+import java.io.Serializable;
+
+public class UsernameDto implements Serializable {
     private String newUsername;
 
     public String getNewUsername() {

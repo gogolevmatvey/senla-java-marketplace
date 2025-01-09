@@ -1,6 +1,8 @@
 package org.example.dto;
 
-public class AdsDto {
+import java.io.Serializable;
+
+public class AdsDto implements Serializable {
     private String title;
     private String category;
     private String description;

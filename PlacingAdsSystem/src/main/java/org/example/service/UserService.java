@@ -52,6 +52,16 @@ public class UserService {
         return currentUser;
     }
 
+    public User changeEmail(String newEmail) throws UserAlreadyExistsException {
+        User currentUser = getCurrentUser();
+        validateEmail(newEmail);
+        String oldEmail = currentUser.getEmail();
+        currentUser.setEmail(newEmail);
+        userDao.update(currentUser);
+        logger.info("Email changed for user {}: {} -> {}", currentUser.getUsername(), oldEmail, newEmail);
+        return currentUser;
+    }
+
     private User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return userDao.findUserByUsername(username);
