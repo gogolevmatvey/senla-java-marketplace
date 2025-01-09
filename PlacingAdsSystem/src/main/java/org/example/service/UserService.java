@@ -11,7 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.regex.Pattern;
 
 @Service
@@ -69,6 +71,36 @@ public class UserService {
         validateEmail(email);
         if (userDao.findUserByUsername(username) != null) {
             throw new UserAlreadyExistsException("User " + username + " already exists");
+        }
+    }
+
+    public User findUserById(long id) {
+        User user = userDao.read(id);
+        return user;
+    }
+
+    public User setAvatar(MultipartFile avatar) {
+        validateImageFormat(avatar);
+        User currentUser = getCurrentUser();
+        try {
+            byte[] avatarBytes = avatar.getBytes();
+            currentUser.setProfilePicture(avatarBytes);
+            userDao.update(currentUser);
+            logger.info("Avatar updated for user: {}", currentUser.getUsername());
+        } catch (IOException e) {
+            logger.error("Failed to set avatar file for user {}: {}", currentUser.getUsername(), e.getMessage());
+        }
+        return currentUser;
+    }
+
+    private void validateImageFormat(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("Avatar file cannot be empty");
+        }
+
+        String contentType = file.getContentType();
+        if (contentType == null || (!contentType.equals("image/jpeg") && !contentType.equals("image/png"))) {
+            throw new IllegalArgumentException("Only JPEG and PNG image formats are allowed");
         }
     }
 

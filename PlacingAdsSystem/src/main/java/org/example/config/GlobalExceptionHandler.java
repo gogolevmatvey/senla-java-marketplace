@@ -18,7 +18,6 @@ public class GlobalExceptionHandler {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         ErrorResponse errorResponse = new ErrorResponse(
                 e.getMessage(),
-                ExceptionUtils.getStackTrace(e),
                 request.getRequestURI(),
                 status.value(),
                 status.getReasonPhrase()
@@ -32,7 +31,6 @@ public class GlobalExceptionHandler {
         HttpStatus status = HttpStatus.NOT_FOUND;
         ErrorResponse errorResponse = new ErrorResponse(
                 e.getMessage(),
-                ExceptionUtils.getStackTrace(e),
                 request.getRequestURI(),
                 status.value(),
                 status.getReasonPhrase()

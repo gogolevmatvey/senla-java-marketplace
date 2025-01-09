@@ -6,6 +6,7 @@ import org.example.model.User;
 import org.example.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/user")
@@ -21,5 +22,11 @@ public class UserController {
             throws UserAlreadyExistsException {
         User updatedUser = userService.changeUsername(usernameDto.getNewUsername());
         return ResponseEntity.ok(updatedUser);
+    }
+
+    @PatchMapping("/avatar")
+    public ResponseEntity<?> uploadAvatar(@RequestParam("avatar") MultipartFile avatar) {
+        User user = userService.setAvatar(avatar);
+        return ResponseEntity.ok(user);
     }
 }

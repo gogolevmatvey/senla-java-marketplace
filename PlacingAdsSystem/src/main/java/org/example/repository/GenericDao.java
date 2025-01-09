@@ -35,7 +35,7 @@ public class GenericDao<T> {
         }
     }
 
-    public T read(int id) {
+    public T read(long id) {
         try {
             return entityManager.find(entityClass, id);
         } catch (Exception e) {
@@ -54,7 +54,7 @@ public class GenericDao<T> {
         }
     }
 
-    public void delete(int id) {
+    public void delete(long id) {
         try {
             T entity = entityManager.find(entityClass, id);
             if (entity != null) {

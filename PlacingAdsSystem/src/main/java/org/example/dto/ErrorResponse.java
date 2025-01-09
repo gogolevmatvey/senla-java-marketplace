@@ -8,7 +8,6 @@ public class ErrorResponse implements Serializable {
     private String path;
     private int status;
     private String error;
-    private String trace;
 
     public ErrorResponse() {
     }
@@ -17,9 +16,8 @@ public class ErrorResponse implements Serializable {
         this.message = message;
     }
 
-    public ErrorResponse(String message, String trace, String path, int status, String error) {
+    public ErrorResponse(String message, String path, int status, String error) {
         this.message = message;
-        this.trace = trace;
         this.path = path;
         this.status = status;
         this.error = error;
@@ -56,14 +54,6 @@ public class ErrorResponse implements Serializable {
 
     public void setError(String error) {
         this.error = error;
-    }
-
-    public String getTrace() {
-        return trace;
-    }
-
-    public void setTrace(String trace) {
-        this.trace = trace;
     }
 }
 
