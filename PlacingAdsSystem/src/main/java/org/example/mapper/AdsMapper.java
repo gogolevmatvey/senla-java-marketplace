@@ -11,6 +11,7 @@ import java.util.List;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AdsMapper {
     @Mapping(target = "title", source = "title")
+    @Mapping(target = "category", source = "category")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "price", source = "price")
     AdsDto toDto(Ads ads);
@@ -18,6 +19,7 @@ public interface AdsMapper {
     List<AdsDto> toDtoList(List<Ads> adsList);
 
     @Mapping(target = "title", source = "title")
+    @Mapping(target = "category", source = "category")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "price", source = "price")
     Ads toEntity(AdsDto adsDto);

@@ -14,6 +14,8 @@ public class Ads {
     private Long id;
     @Column(name = "ads_title", nullable = false)
     private String title;
+    @Column(name = "ads_category", nullable = false)
+    private String category;
     @Column(name = "ads_description", nullable = false, length = 1000)
     private String description;
     @Column(name = "ads_price", nullable = false)
@@ -40,8 +42,9 @@ public class Ads {
     public Ads() {
     }
 
-    public Ads(String title, String description, double price, User user) {
+    public Ads(String title, String category, String description, double price, User user) {
         this.title = title;
+        this.category = category;
         this.description = description;
         this.price = price;
         this.user = user;
@@ -66,6 +69,14 @@ public class Ads {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getDescription() {
@@ -124,11 +135,28 @@ public class Ads {
         this.status = status;
     }
 
+    public byte[] getMainImage() {
+        return mainImage;
+    }
+
+    public void setMainImage(byte[] mainImage) {
+        this.mainImage = mainImage;
+    }
+
+    public List<AdsImage> getAdditionalImages() {
+        return additionalImages;
+    }
+
+    public void setAdditionalImages(List<AdsImage> additionalImages) {
+        this.additionalImages = additionalImages;
+    }
+
     @Override
     public String toString() {
         return "Ads{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
+                ", category='" + category + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
                 ", user=" + user +

@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
@@ -42,4 +39,5 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(status).body(errorResponse);
     }
+
 }

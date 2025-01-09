@@ -36,7 +36,7 @@ public class AdsService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User currentUser = userDao.findUserByUsername(username);
 
-        Ads newAds = new Ads(ads.getTitle(), ads.getDescription(), ads.getPrice(), currentUser);
+        Ads newAds = new Ads(ads.getTitle(), ads.getCategory(), ads.getDescription(), ads.getPrice(), currentUser);
         adsDao.create(newAds);
         logger.info("Объявление {} создано пользователем {}.", newAds, currentUser.getUsername());
     }
@@ -44,12 +44,16 @@ public class AdsService {
     public Ads createAds(AdsDto adsDto) {
         Ads newAds = adsMapper.toEntity(adsDto);
         validateAds(newAds);
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User currentUser = userDao.findUserByUsername(username);
+        User currentUser = getCurrentUser();
         newAds.setUser(currentUser);
         adsDao.create(newAds);
         logger.info("Объявление {} добавлено в БД.", newAds);
         return newAds;
+    }
+
+    public User getCurrentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userDao.findUserByUsername(username);
     }
 
     public Ads getAdsById(int id) {

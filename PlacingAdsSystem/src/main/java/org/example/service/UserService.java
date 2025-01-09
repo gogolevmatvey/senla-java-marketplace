@@ -6,6 +6,7 @@ import org.example.model.UserRole;
 import org.example.repository.UserDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -28,19 +29,49 @@ public class UserService {
     }
 
     public User addUser(String username, String email, String password, String role) throws UserAlreadyExistsException {
-        if (userDao.findUserByUsername(username) != null)
-            throw new UserAlreadyExistsException("Пользователь " + username + " уже существует.");
-        validateEmail(email);
+        validateUserCredentials(username, email);
         password = passwordEncoder.encode(password);
         User user = new User(username, email, password, UserRole.valueOf(role.toUpperCase()));
         userDao.create(user);
-        logger.info("Пользователь {} добавлен в БД.", user);
+        logger.info("User is {} added to DB.", user);
         return user;
     }
 
-    private void validateEmail(String email) {
+    public User changeUsername(String newUsername) throws UserAlreadyExistsException {
+        User currentUser = getCurrentUser();
+        User userWithNewUsername = userDao.findUserByUsername(newUsername);
+        if (userWithNewUsername != null) {
+            throw new UserAlreadyExistsException("Username " + newUsername + " is already taken");
+        }
+        String oldUsername = currentUser.getUsername();
+        currentUser.setUsername(newUsername);
+        userDao.update(currentUser);
+        logger.info("Username changed: {} -> {}", oldUsername, newUsername);
+        return currentUser;
+    }
+
+    private User getCurrentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userDao.findUserByUsername(username);
+    }
+
+    private void validateEmail(String email) throws UserAlreadyExistsException {
         if (email == null || !EMAIL_PATTERN.matcher(email).matches()) {
             throw new IllegalArgumentException("Incorrect email.");
         }
+        if (userDao.findUserByEmail(email) != null) {
+            throw new UserAlreadyExistsException("Email " + email + " is already registered");
+        }
     }
+
+    private void validateUserCredentials(String username, String email) throws IllegalArgumentException,
+            UserAlreadyExistsException{
+        validateEmail(email);
+        if (userDao.findUserByUsername(username) != null) {
+            throw new UserAlreadyExistsException("User " + username + " already exists");
+        }
+    }
+
+
+
 }

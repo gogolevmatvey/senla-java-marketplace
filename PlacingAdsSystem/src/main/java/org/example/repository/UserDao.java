@@ -32,4 +32,19 @@ public class UserDao extends GenericDao<User> {
             return null;
         }
     }
+
+    public User findUserByEmail(String email) {
+        try {
+            String hql = "FROM User WHERE email = :email";
+            TypedQuery<User> query = entityManager.createQuery(hql, User.class);
+            query.setParameter("email", email);
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            logger.error("User with email {} not found: {}", email, e.getMessage());
+            return null;
+        } catch (Exception e) {
+            logger.error("Error finding user with email {}: {}", email, e.getMessage());
+            return null;
+        }
+    }
 }

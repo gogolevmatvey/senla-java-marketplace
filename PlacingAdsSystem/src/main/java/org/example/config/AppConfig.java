@@ -38,8 +38,6 @@ public class AppConfig {
     private String hibernateShowSql;
     @Value("${hibernate.hbm2ddl.auto}")
     private String hibernateHdm2ddlAuto;
-    @Value("${hibernate.ddl-auto}")
-    private String hibernateDdlAuto;
 
     @Bean
     public DataSource dataSource() {
@@ -64,7 +62,6 @@ public class AppConfig {
         properties.setProperty("hibernate.dialect", hibernateDialect);
         properties.setProperty("hibernate.show_sql", hibernateShowSql);
         properties.setProperty("hibernate.hbm2ddl.auto", hibernateHdm2ddlAuto);
-        properties.setProperty("hibernate.ddl-auto", hibernateDdlAuto);
         em.setJpaProperties(properties);
         return em;
     }

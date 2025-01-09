@@ -2,14 +2,16 @@ package org.example.dto;
 
 public class AdsDto {
     private String title;
+    private String category;
     private String description;
     private Double price;
 
     public AdsDto() {
     }
 
-    public AdsDto(String title, String description, Double price) {
+    public AdsDto(String title, String category, String description, Double price) {
         this.title = title;
+        this.category = category;
         this.description = description;
         this.price = price;
     }
@@ -20,6 +22,14 @@ public class AdsDto {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getDescription() {
