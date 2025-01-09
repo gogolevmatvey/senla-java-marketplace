@@ -1,6 +1,6 @@
 package org.example.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +23,8 @@ public class Ads {
     private User user;
     @Column(name = "ads_creation_date")
     private LocalDate creationDate;
-    @Column(name = "ads_is_promoted")
-    private boolean isPromoted;
+//    @Column(name = "ads_is_promoted")
+//    private boolean isPromoted;
     @Column(name = "ads_promotion_end_date")
     private LocalDate promotionEndDate;
     @OneToMany(mappedBy = "ads", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -32,6 +32,13 @@ public class Ads {
     @Enumerated(EnumType.STRING)
     @Column(name = "ads_status")
     private AdsStatus status;
+    @Column(name = "ads_main_image")
+    private byte[] mainImage;
+    @OneToMany(mappedBy = "ads", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<AdsImage> additionalImages;
+
+    public Ads() {
+    }
 
     public Ads(String title, String description, double price, User user) {
         this.title = title;
@@ -39,9 +46,10 @@ public class Ads {
         this.price = price;
         this.user = user;
         this.creationDate = LocalDate.now();
-        this.isPromoted = false;
         this.comments = new ArrayList<Comment>();
         this.status = AdsStatus.ACTIVE;
+        this.mainImage = null;
+        this.additionalImages = new ArrayList<>();
     }
 
     public Long getId() {
@@ -100,14 +108,6 @@ public class Ads {
         this.promotionEndDate = promotionEndDate;
     }
 
-    public boolean isPromoted() {
-        return isPromoted;
-    }
-
-    public void setPromoted(boolean promoted) {
-        isPromoted = promoted;
-    }
-
     public List<Comment> getComments() {
         return comments;
     }
@@ -133,7 +133,6 @@ public class Ads {
                 ", price=" + price +
                 ", user=" + user +
                 ", creationDate=" + creationDate +
-                ", isPromoted=" + isPromoted +
                 ", promotionEndDate=" + promotionEndDate +
                 ", comments=" + comments +
                 ", status=" + status +

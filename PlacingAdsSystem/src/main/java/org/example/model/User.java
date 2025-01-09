@@ -1,6 +1,6 @@
 package org.example.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,22 +14,30 @@ public class User {
     private Long id;
     @Column(name = "user_name", nullable = false, unique = true)
     private String username;
+    @Column(name = "user_email", nullable = false)
+    private String email;
     @Column(name = "user_password", nullable = false)
     private String password;
     @Enumerated(EnumType.STRING)
     @Column(name = "user_role")
     private UserRole role;
     @Column(name = "user_seller_rating")
-    private int sellerRating;
+    private Double sellerRating = 0.0;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Ads> advertisements;
+    @Column(name = "user_picture")
+    private byte[] profilePicture;
 
-    public User(String username, String password, UserRole role) {
+    public User() {}
+
+    public User(String username, String email, String password, UserRole role) {
         this.username = username;
+        this.email = email;
         this.password = password;
         this.role = role;
-        this.sellerRating = 0;
+        this.sellerRating = 0.0;
         this.advertisements = new ArrayList<Ads>();
+        this.profilePicture = null;
     }
 
     public Long getId() {
@@ -48,6 +56,14 @@ public class User {
         this.username = username;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -64,11 +80,11 @@ public class User {
         this.role = role;
     }
 
-    public int getSellerRating() {
+    public Double getSellerRating() {
         return sellerRating;
     }
 
-    public void setSellerRating(int sellerRating) {
+    public void setSellerRating(Double sellerRating) {
         this.sellerRating = sellerRating;
     }
 
@@ -78,6 +94,14 @@ public class User {
 
     public void setAdvertisements(List<Ads> advertisements) {
         this.advertisements = advertisements;
+    }
+
+    public byte[] getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(byte[] profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     @Override

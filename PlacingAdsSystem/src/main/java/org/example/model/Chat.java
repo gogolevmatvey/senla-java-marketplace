@@ -1,6 +1,6 @@
 package org.example.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,16 +17,15 @@ public class Chat {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "buyer_id")
     private User buyer;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "seller_id")
-    private User seller;
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Message> messages;
+
+    public Chat() {
+    }
 
     public Chat(Ads ads, User buyer, User seller) {
         this.ads = ads;
         this.buyer = buyer;
-        this.seller = seller;
         this.messages = new ArrayList<Message>();
     }
 
@@ -54,14 +53,6 @@ public class Chat {
         this.buyer = buyer;
     }
 
-    public User getSeller() {
-        return seller;
-    }
-
-    public void setSeller(User seller) {
-        this.seller = seller;
-    }
-
     public List<Message> getMessages() {
         return messages;
     }
@@ -76,7 +67,6 @@ public class Chat {
                 "id=" + id +
                 ", ads=" + ads +
                 ", buyer=" + buyer +
-                ", seller=" + seller +
                 ", messages=" + messages +
                 '}';
     }

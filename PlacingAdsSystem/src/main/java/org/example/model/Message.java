@@ -1,6 +1,6 @@
 package org.example.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -24,9 +24,9 @@ public class Message {
     private String content;
     @Column(name = "message_send_date")
     private LocalDateTime sendDate;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ads_id")
-    private Ads ads;
+
+    public Message() {
+    }
 
     public Message(Chat chat, User sender, User receiver, String content, Ads ads) {
         this.chat = chat;
@@ -34,7 +34,6 @@ public class Message {
         this.receiver = receiver;
         this.content = content;
         this.sendDate = LocalDateTime.now();
-        this.ads = ads;
     }
 
     public Long getId() {
@@ -85,14 +84,6 @@ public class Message {
         this.sendDate = sendDate;
     }
 
-    public Ads getAds() {
-        return ads;
-    }
-
-    public void setAds(Ads ads) {
-        this.ads = ads;
-    }
-
     @Override
     public String toString() {
         return "Message{" +
@@ -102,7 +93,6 @@ public class Message {
                 ", receiver=" + receiver +
                 ", content='" + content + '\'' +
                 ", sendDate=" + sendDate +
-                ", ads=" + ads +
                 '}';
     }
 }

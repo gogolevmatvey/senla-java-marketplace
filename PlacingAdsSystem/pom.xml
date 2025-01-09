@@ -15,12 +15,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <parent>
-        <groupId>org.example</groupId>
-        <artifactId>Parent-Pom-PlacingAdsSystem</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -247,14 +241,6 @@
                             <version>1.6.3</version>
                         </path>
                     </annotationProcessorPaths>
-                    <compilerArgs>
-                        <compilerArg>
-                            -Amapstruct.suppressGeneratorTimestamp=true
-                        </compilerArg>
-                        <compilerArg>
-                            -Amapstruct.defaultComponentModel=spring
-                        </compilerArg>
-                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>

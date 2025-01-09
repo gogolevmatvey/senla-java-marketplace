@@ -5,9 +5,12 @@ import org.example.dto.JwtResponse;
 import org.example.dto.LoginRequest;
 import org.example.dto.RegisterRequest;
 import org.example.exceptions.UserAlreadyExistsException;
+import org.example.service.AdsService;
 import org.example.service.CustomUserDetailsService;
 import org.example.service.JwtService;
 import org.example.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +32,7 @@ public class AuthController {
     private final JwtService jwtService;
     private final UserService userService;
     private final CustomUserDetailsService customUserDetailsService;
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     public AuthController(AuthenticationManager authenticationManager, JwtService jwtService, UserService userService,
                           CustomUserDetailsService customUserDetailsService) {
@@ -40,31 +44,36 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) throws UserAlreadyExistsException {
-        org.example.model.User user = userService.addUser(request.getUsername(), request.getPassword(), request.getRole());
+        org.example.model.User user = userService.addUser(request.getUsername(), request.getEmail(),
+                request.getPassword(), request.getRole());
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(request.getUsername());
         String token = jwtService.generateToken(userDetails);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(new JwtResponse(token));
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.getUsername(),
-                            loginRequest.getPassword()
-                    )
-            );
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getUsername(),
+                        loginRequest.getPassword()
+                )
+        );
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String token = jwtService.generateToken(userDetails);
+        return ResponseEntity.ok(new JwtResponse(token));
+    }
 
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String token = jwtService.generateToken(userDetails);
-
-            return ResponseEntity.ok(new JwtResponse(token));
-
-        } catch (BadCredentialsException e) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(new ErrorResponse("Неверные учетные данные"));
-        }
+    @PostMapping("/login")
+    public ResponseEntity<?> login2(@RequestBody LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getUsername(),
+                        loginRequest.getPassword()
+                )
+        );
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String token = jwtService.generateToken(userDetails);
+        return ResponseEntity.ok(new JwtResponse(token));
     }
 }

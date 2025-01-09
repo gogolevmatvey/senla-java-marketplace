@@ -1,7 +1,8 @@
 package org.example.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comments")
@@ -14,17 +15,23 @@ public class Comment {
     @JoinColumn(name = "user_id")
     private User user;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "advertisement_id")
+    @JoinColumn(name = "ads_id")
     private Ads ads;
     @Column(name = "comment_content", nullable = false)
     private String content;
+    @Column(name = "rating_value")
+    private Integer ratingValue;
     @Column(name = "comment_creation_date")
     private LocalDate creationDate;
 
-    public Comment(User user, Ads ads, String content) {
+    public Comment() {
+    }
+
+    public Comment(User user, Ads ads, String content, Integer ratingValue) {
         this.user = user;
         this.ads = ads;
         this.content = content;
+        this.ratingValue = ratingValue;
         this.creationDate = LocalDate.now();
     }
 
@@ -60,6 +67,14 @@ public class Comment {
         this.content = content;
     }
 
+    public Integer getRatingValue() {
+        return ratingValue;
+    }
+
+    public void setRatingValue(Integer ratingValue) {
+        this.ratingValue = ratingValue;
+    }
+
     public LocalDate getCreationDate() {
         return creationDate;
     }
@@ -75,6 +90,7 @@ public class Comment {
                 ", user=" + user +
                 ", ads=" + ads +
                 ", content='" + content + '\'' +
+                ", ratingValue=" + ratingValue +
                 ", creationDate=" + creationDate +
                 '}';
     }

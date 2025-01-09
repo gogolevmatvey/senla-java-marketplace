@@ -19,6 +19,7 @@ CREATE TABLE advertisements (
     ads_is_promoted BOOLEAN DEFAULT FALSE,
     ads_promotion_end_date DATE,
     ads_status ads_status NOT NULL
+
 );
 
 CREATE TABLE comments (

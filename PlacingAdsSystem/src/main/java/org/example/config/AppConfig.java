@@ -64,8 +64,8 @@ public class AppConfig {
         properties.setProperty("hibernate.dialect", hibernateDialect);
         properties.setProperty("hibernate.show_sql", hibernateShowSql);
         properties.setProperty("hibernate.hbm2ddl.auto", hibernateHdm2ddlAuto);
+        properties.setProperty("hibernate.ddl-auto", hibernateDdlAuto);
         em.setJpaProperties(properties);
-
         return em;
     }
 
