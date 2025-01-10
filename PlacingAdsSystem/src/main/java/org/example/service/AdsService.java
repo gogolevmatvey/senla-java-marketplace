@@ -172,6 +172,26 @@ public class AdsService {
         }
     }
 
+    public AdsDto changePrice(Long adsId, double newPrice) {
+        Ads ads = adsDao.read(adsId);
+        isAdsExist(adsId, ads);
+
+        validateUserPermissions(ads);
+        validatePrice(newPrice);
+
+        ads.setPrice(newPrice);
+        adsDao.update(ads);
+        logger.info("Price updated for advertisement id: {}", adsId);
+
+        return adsMapper.toDto(ads);
+    }
+
+    private void validatePrice(double price) {
+        if (price < 0) {
+            throw new IllegalArgumentException("Price can't be negative");
+        }
+    }
+
     public Ads getAdsById(int id) {
         return adsDao.read(id);
     }

@@ -1,9 +1,6 @@
 package org.example.controller;
 
-import org.example.dto.AdsDto;
-import org.example.dto.CategoryDto;
-import org.example.dto.DescriptionDto;
-import org.example.dto.TitleDto;
+import org.example.dto.*;
 import org.example.model.Ads;
 import org.example.service.AdsService;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +44,12 @@ public class AdsController {
     @PatchMapping("/{adsId}/description")
     public ResponseEntity<?> updateDescription(@PathVariable("adsId") Long adsId, @RequestBody DescriptionDto descriptionDto) {
         AdsDto updatedAds = adsService.changeDescription(adsId, descriptionDto.getDescription());
+        return ResponseEntity.ok(updatedAds);
+    }
+
+    @PatchMapping("/{adsId}/price")
+    public ResponseEntity<?> changePrice(@PathVariable("adsId") Long adsId, @RequestBody PriceDto priceDto) {
+        AdsDto updatedAds = adsService.changePrice(adsId, priceDto.getPrice());
         return ResponseEntity.ok(updatedAds);
     }
 }
