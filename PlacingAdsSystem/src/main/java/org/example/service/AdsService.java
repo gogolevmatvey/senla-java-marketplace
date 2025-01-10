@@ -64,6 +64,9 @@ public class AdsService {
         ads.getComments().add(comment);
         adsDao.update(ads);
 
+        User seller = ads.getUser();
+        updateSellerRating(seller);
+
         logger.info("New comment added to ad {} by user {}", adsId, currentUser.getUsername());
 
         Comment savedComment = ads.getComments().get(ads.getComments().size() - 1);
@@ -97,6 +100,13 @@ public class AdsService {
         if (commentDao.hasUserCommented(ads.getId(), currentUser.getId())) {
             throw new IllegalStateException("You have already commented on this advertisement");
         }
+    }
+
+    private void updateSellerRating(User seller) {
+        Double newRating = userDao.calculateAverageSellerRating(seller.getId());
+        seller.setSellerRating(newRating);
+        userDao.update(seller);
+        logger.info("Seller {} rating updated to {}", seller.getUsername(), newRating);
     }
 
     public AdsDto createAds(AdsDto adsDto) {

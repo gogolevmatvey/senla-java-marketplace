@@ -47,4 +47,12 @@ public class UserDao extends GenericDao<User> {
             return null;
         }
     }
+
+    public Double calculateAverageSellerRating(Long sellerId) {
+        String hql = "SELECT AVG(c.rating) FROM Comment c JOIN c.ads a WHERE a.user.id = :sellerId";
+        TypedQuery<Double> query = entityManager.createQuery(hql, Double.class);
+        query.setParameter("sellerId", sellerId);
+        Double result = query.getSingleResult();
+        return result != null ? result : 0.0;
+    }
 }
