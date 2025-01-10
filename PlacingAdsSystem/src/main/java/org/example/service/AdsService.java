@@ -1,11 +1,15 @@
 package org.example.service;
 
 import org.example.dto.AdsDto;
+import org.example.dto.CommentDto;
 import org.example.mapper.AdsMapper;
+import org.example.mapper.CommentMapper;
 import org.example.model.Ads;
 import org.example.model.AdsStatus;
+import org.example.model.Comment;
 import org.example.model.User;
 import org.example.repository.AdsDao;
+import org.example.repository.CommentDao;
 import org.example.repository.UserDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,13 +21,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class AdsService {
     private AdsDao adsDao;
     private UserDao userDao;
+    private CommentDao commentDao;
     private AdsMapper adsMapper;
+    private CommentMapper commentMapper;
     private static final Logger logger = LoggerFactory.getLogger(AdsService.class);
 
     @Value("${ads.title.max-length}")
@@ -31,19 +39,64 @@ public class AdsService {
     @Value("${ads.description.max-length}")
     private int descriptionMaxLength;
 
-    public AdsService(AdsDao adsDao, UserDao userDao, AdsMapper adsMapper) {
+    public AdsService(AdsDao adsDao, UserDao userDao, CommentDao commentDao, AdsMapper adsMapper, CommentMapper commentMapper) {
         this.adsDao = adsDao;
         this.userDao = userDao;
+        this.commentDao = commentDao;
         this.adsMapper = adsMapper;
+        this.commentMapper = commentMapper;
     }
 
-    public void createAds(Ads ads) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User currentUser = userDao.findUserByUsername(username);
+    public CommentDto addComment(Long adsId, CommentDto commentDto) {
+        Ads ads = adsDao.read(adsId);
+        isAdsExist(adsId, ads);
+        isAdsSold(ads);
+        validateCommentPermissions(ads);
+        validateCommentRating(commentDto.getRating());
+        validateSingleCommentPerUser(ads);
 
-        Ads newAds = new Ads(ads.getTitle(), ads.getCategory(), ads.getDescription(), ads.getPrice(), currentUser);
-        adsDao.create(newAds);
-        logger.info("Объявление {} создано пользователем {}.", newAds, currentUser.getUsername());
+        Comment comment = commentMapper.toEntity(commentDto);
+        User currentUser = getCurrentUser();
+        comment.setAds(ads);
+        comment.setUser(currentUser);
+        comment.setCreationDate(LocalDate.now());
+
+        ads.getComments().add(comment);
+        adsDao.update(ads);
+
+        logger.info("New comment added to ad {} by user {}", adsId, currentUser.getUsername());
+
+        Comment savedComment = ads.getComments().get(ads.getComments().size() - 1);
+        return commentMapper.toDto(savedComment);
+    }
+
+    private void isAdsSold(Ads ads) {
+        if (ads.getStatus() != AdsStatus.SOLD) {
+            throw new IllegalStateException("Comments can only be added to purchased items");
+        }
+    }
+
+    private void validateCommentPermissions(Ads ads) {
+        if (ads.getUser().getId().equals(getCurrentUser().getId())) {
+            throw new IllegalStateException("You can't comment on your own advertisement");
+        }
+    }
+
+    private void validateCommentRating(Integer rating) {
+        if (rating == null) {
+            throw new IllegalArgumentException("Rating value is required");
+        }
+
+        if (rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("Rating must be between 1 and 5");
+        }
+    }
+
+    private void validateSingleCommentPerUser(Ads ads) {
+        User currentUser = getCurrentUser();
+        if (commentDao.hasUserCommented(ads.getId(), currentUser.getId())) {
+            throw new IllegalStateException("You have already commented on this advertisement");
+        }
     }
 
     public AdsDto createAds(AdsDto adsDto) {
@@ -215,6 +268,17 @@ public class AdsService {
         }
     }
 
+    public void deleteAds(Long adsId) {
+        Ads ads = adsDao.read(adsId);
+        isAdsExist(adsId, ads);
+
+        validateUserPermissions(ads);
+
+        ads.setStatus(AdsStatus.DELETED);
+        adsDao.update(ads);
+        logger.info("Advertisement with id: {} has been marked as deleted", adsId);
+    }
+
     public Ads getAdsById(int id) {
         return adsDao.read(id);
     }
@@ -235,5 +299,27 @@ public class AdsService {
             throw new RuntimeException("Failed to process image upload", e);
         }
         return adsMapper.toDto(ads);
+    }
+
+    public List<AdsDto> searchAds(String keyword, String category, Double minPrice, Double maxPrice) {
+        validateSearchInput(minPrice, maxPrice);
+
+        List<Ads> foundAds = adsDao.searchAds(keyword, category, minPrice, maxPrice);
+
+        return foundAds.stream().map(adsMapper::toDto).collect(Collectors.toList());
+    }
+
+    private void validateSearchInput(Double minPrice, Double maxPrice) {
+        if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
+            throw new IllegalArgumentException("Minimum price can't be greater than maximum price");
+        }
+
+        if (minPrice != null && minPrice < 0) {
+            throw new IllegalArgumentException("Minimum price can't be negative");
+        }
+
+        if (maxPrice != null && maxPrice < 0) {
+            throw new IllegalArgumentException("Maximum price can't be negative");
+        }
     }
 }

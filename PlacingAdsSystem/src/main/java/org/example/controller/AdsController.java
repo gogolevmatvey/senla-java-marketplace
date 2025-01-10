@@ -1,12 +1,12 @@
 package org.example.controller;
 
 import org.example.dto.*;
-import org.example.model.Ads;
 import org.example.service.AdsService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/ads")
@@ -57,5 +57,28 @@ public class AdsController {
     public ResponseEntity<?> changeStatus(@PathVariable("adsId") Long adsId, @RequestBody StatusDto statusDto) {
         AdsDto updatedAds = adsService.changeStatus(adsId, statusDto.getStatus());
         return ResponseEntity.ok(updatedAds);
+    }
+
+    @DeleteMapping("/{adsId}")
+    public ResponseEntity<?> deleteAds(@PathVariable("adsId") Long adsId) {
+        adsService.deleteAds(adsId);
+        return ResponseEntity.ok(new MessageResponse("Advertisement successfully deleted"));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<AdsDto>> searchAds(
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "category", required = false) String category,
+            @RequestParam(name = "minPrice", required = false) Double minPrice,
+            @RequestParam(name = "maxPrice", required = false) Double maxPrice) {
+
+        List<AdsDto> ads = adsService.searchAds(keyword, category, minPrice, maxPrice);
+        return ResponseEntity.ok(ads);
+    }
+
+    @PostMapping("/{adsId}/comment")
+    public ResponseEntity<?> addComment(@PathVariable("adsId") Long adsId, @RequestBody CommentDto commentDto) {
+        CommentDto createdComment = adsService.addComment(adsId, commentDto);
+        return ResponseEntity.ok(createdComment);
     }
 }

@@ -2,7 +2,6 @@ package org.example.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comments")
@@ -19,19 +18,19 @@ public class Comment {
     private Ads ads;
     @Column(name = "comment_content", nullable = false)
     private String content;
-    @Column(name = "rating_value")
-    private Integer ratingValue;
+    @Column(name = "comment_rating")
+    private Integer rating;
     @Column(name = "comment_creation_date")
     private LocalDate creationDate;
 
     public Comment() {
     }
 
-    public Comment(User user, Ads ads, String content, Integer ratingValue) {
+    public Comment(User user, Ads ads, String content, Integer rating) {
         this.user = user;
         this.ads = ads;
         this.content = content;
-        this.ratingValue = ratingValue;
+        this.rating = rating;
         this.creationDate = LocalDate.now();
     }
 
@@ -67,12 +66,12 @@ public class Comment {
         this.content = content;
     }
 
-    public Integer getRatingValue() {
-        return ratingValue;
+    public Integer getRating() {
+        return rating;
     }
 
-    public void setRatingValue(Integer ratingValue) {
-        this.ratingValue = ratingValue;
+    public void setRating(Integer rating) {
+        this.rating = rating;
     }
 
     public LocalDate getCreationDate() {
@@ -90,7 +89,7 @@ public class Comment {
                 ", user=" + user +
                 ", ads=" + ads +
                 ", content='" + content + '\'' +
-                ", ratingValue=" + ratingValue +
+                ", ratingValue=" + rating +
                 ", creationDate=" + creationDate +
                 '}';
     }

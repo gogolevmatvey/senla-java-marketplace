@@ -11,6 +11,7 @@ public class AdsDto implements Serializable {
     private String category;
     private String description;
     private Double price;
+    private String username;
     private LocalDate creationDate;
     private LocalDate promotionEndDate;
     private AdsStatus status;
@@ -64,6 +65,14 @@ public class AdsDto implements Serializable {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public LocalDate getCreationDate() {
