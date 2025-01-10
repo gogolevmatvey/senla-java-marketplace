@@ -52,4 +52,10 @@ public class AdsController {
         AdsDto updatedAds = adsService.changePrice(adsId, priceDto.getPrice());
         return ResponseEntity.ok(updatedAds);
     }
+
+    @PatchMapping("/{adsId}/status")
+    public ResponseEntity<?> changeStatus(@PathVariable("adsId") Long adsId, @RequestBody StatusDto statusDto) {
+        AdsDto updatedAds = adsService.changeStatus(adsId, statusDto.getStatus());
+        return ResponseEntity.ok(updatedAds);
+    }
 }

@@ -192,6 +192,29 @@ public class AdsService {
         }
     }
 
+    public AdsDto changeStatus(Long adsId, AdsStatus newStatus) {
+        Ads ads = adsDao.read(adsId);
+        isAdsExist(adsId, ads);
+
+        validateUserPermissions(ads);
+        validateStatus(newStatus);
+
+        ads.setStatus(newStatus);
+        adsDao.update(ads);
+        logger.info("Status updated to {} for advertisement id: {}", newStatus, adsId);
+
+        return adsMapper.toDto(ads);
+    }
+
+    private void validateStatus(AdsStatus status) {
+        if (status == null) {
+            throw new IllegalArgumentException("Status can't be null");
+        }
+        if (status != AdsStatus.ACTIVE && status != AdsStatus.INACTIVE && status != AdsStatus.SOLD) {
+            throw new IllegalArgumentException("Wrong status");
+        }
+    }
+
     public Ads getAdsById(int id) {
         return adsDao.read(id);
     }
