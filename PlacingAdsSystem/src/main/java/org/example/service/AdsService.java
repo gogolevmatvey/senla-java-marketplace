@@ -94,15 +94,9 @@ public class AdsService {
 
     public AdsDto changeTitle(Long adsId, String newTitle) {
         Ads ads = adsDao.read(adsId);
-        if (ads == null) {
-            throw new IllegalArgumentException("Advertisement not found with id: " + adsId);
-        }
+        isAdsExist(adsId, ads);
 
-        User currentUser = getCurrentUser();
-        if (!ads.getUser().getId().equals(currentUser.getId())) {
-            throw new IllegalStateException("User does not have permission to modify this advertisement");
-        }
-
+        validateUserPermissions(ads);
         validateTitle(newTitle);
 
         ads.setTitle(newTitle);
@@ -122,17 +116,24 @@ public class AdsService {
 
     }
 
-    public AdsDto changeDescription(Long adsId, String newDescription) {
-        Ads ads = adsDao.read(adsId);
+    private void isAdsExist(Long adsId, Ads ads) {
         if (ads == null) {
             throw new IllegalArgumentException("Advertisement not found with id: " + adsId);
         }
+    }
 
+    private void validateUserPermissions(Ads ads) {
         User currentUser = getCurrentUser();
         if (!ads.getUser().getId().equals(currentUser.getId())) {
-            throw new IllegalStateException("User does not have permission to modify this advertisement");
+            throw new IllegalStateException("User doesn't have permission to modify this advertisement");
         }
+    }
 
+    public AdsDto changeDescription(Long adsId, String newDescription) {
+        Ads ads = adsDao.read(adsId);
+        isAdsExist(adsId, ads);
+
+        validateUserPermissions(ads);
         validateDescription(newDescription);
 
         ads.setDescription(newDescription);
@@ -151,6 +152,26 @@ public class AdsService {
         }
     }
 
+    public AdsDto changeCategory(Long adsId, String newCategory) {
+        Ads ads = adsDao.read(adsId);
+        isAdsExist(adsId, ads);
+
+        validateUserPermissions(ads);
+        validateCategory(newCategory);
+
+        ads.setCategory(newCategory);
+        adsDao.update(ads);
+        logger.info("Category updated for advertisement id: {}", adsId);
+
+        return adsMapper.toDto(ads);
+    }
+
+    private void validateCategory(String category) {
+        if (category == null || category.trim().isEmpty()) {
+            throw new IllegalArgumentException("Category can't be empty");
+        }
+    }
+
     public Ads getAdsById(int id) {
         return adsDao.read(id);
     }
@@ -158,15 +179,9 @@ public class AdsService {
     public AdsDto setMainImage(Long adsId, MultipartFile image) {
         validateImage(image);
         Ads ads = adsDao.read(adsId);
+        isAdsExist(adsId, ads);
 
-        if (ads == null) {
-            throw new IllegalArgumentException("Advertisement not found with id: " + adsId);
-        }
-
-        User currentUser = getCurrentUser();
-        if (!ads.getUser().getId().equals(currentUser.getId())) {
-            throw new IllegalStateException("User doesn't have permission to modify this advertisement");
-        }
+        validateUserPermissions(ads);
 
         try {
             ads.setMainImage(image.getBytes());

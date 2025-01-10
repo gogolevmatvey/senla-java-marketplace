@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.dto.AdsDto;
+import org.example.dto.CategoryDto;
 import org.example.dto.DescriptionDto;
 import org.example.dto.TitleDto;
 import org.example.model.Ads;
@@ -34,6 +35,12 @@ public class AdsController {
     @PatchMapping("/{adsId}/title")
     public ResponseEntity<?> changeTitle(@PathVariable("adsId") Long adsId, @RequestBody TitleDto titleDto) {
         AdsDto updatedAds = adsService.changeTitle(adsId, titleDto.getTitle());
+        return ResponseEntity.ok(updatedAds);
+    }
+
+    @PatchMapping("/{adsId}/category")
+    public ResponseEntity<?> changeCategory(@PathVariable("adsId") Long adsId, @RequestBody CategoryDto categoryDto) {
+        AdsDto updatedAds = adsService.changeCategory(adsId, categoryDto.getCategory());
         return ResponseEntity.ok(updatedAds);
     }
 
