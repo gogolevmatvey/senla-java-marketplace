@@ -28,7 +28,7 @@ public class Message {
     public Message() {
     }
 
-    public Message(Chat chat, User sender, User receiver, String content, Ads ads) {
+    public Message(Chat chat, User sender, User receiver, String content) {
         this.chat = chat;
         this.sender = sender;
         this.receiver = receiver;

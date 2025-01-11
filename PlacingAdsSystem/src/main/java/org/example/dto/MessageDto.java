@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 public class MessageDto implements Serializable {
     private Long id;
     private Long chatId;
-    private UserDto sender;
+    private String senderUsername;
     private String content;
     private LocalDateTime sendDate;
 
@@ -26,12 +26,12 @@ public class MessageDto implements Serializable {
         this.chatId = chatId;
     }
 
-    public UserDto getSender() {
-        return sender;
+    public String getSenderUsername() {
+        return senderUsername;
     }
 
-    public void setSender(UserDto sender) {
-        this.sender = sender;
+    public void setSenderUsername(String senderUsername) {
+        this.senderUsername = senderUsername;
     }
 
     public String getContent() {
