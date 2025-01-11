@@ -23,7 +23,7 @@ public class Chat {
     public Chat() {
     }
 
-    public Chat(Ads ads, User buyer, User seller) {
+    public Chat(Ads ads, User buyer) {
         this.ads = ads;
         this.buyer = buyer;
         this.messages = new ArrayList<Message>();

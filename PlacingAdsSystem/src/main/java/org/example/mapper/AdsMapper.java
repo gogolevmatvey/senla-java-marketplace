@@ -16,6 +16,7 @@ public interface AdsMapper {
     @Mapping(target = "description", source = "description")
     @Mapping(target = "price", source = "price")
     @Mapping(target = "username", source = "user.username")
+    @Mapping(target = "sellerRating", source = "user.sellerRating")
     @Mapping(target = "creationDate", source = "creationDate")
     @Mapping(target = "promotionEndDate", source = "promotionEndDate")
     @Mapping(target = "status", source = "status")

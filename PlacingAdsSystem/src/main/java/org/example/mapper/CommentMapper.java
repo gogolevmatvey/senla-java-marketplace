@@ -1,8 +1,6 @@
 package org.example.mapper;
 
-import org.example.dto.AdsDto;
 import org.example.dto.CommentDto;
-import org.example.model.Ads;
 import org.example.model.Comment;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

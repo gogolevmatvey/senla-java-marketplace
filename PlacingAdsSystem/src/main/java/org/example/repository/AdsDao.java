@@ -50,7 +50,7 @@ public class AdsDao extends GenericDao<Ads>{
 
         hql.append(" AND a.status = :status");
 
-        hql.append(" ORDER BY a.creationDate DESC");
+        hql.append(" ORDER BY a.user.sellerRating DESC, a.creationDate DESC");
 
         TypedQuery<Ads> query = entityManager.createQuery(hql.toString(), Ads.class);
         parameters.forEach(query::setParameter);
