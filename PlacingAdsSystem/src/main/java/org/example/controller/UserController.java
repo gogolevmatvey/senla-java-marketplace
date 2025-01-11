@@ -4,7 +4,6 @@ import org.example.dto.EmailDto;
 import org.example.dto.UserDto;
 import org.example.dto.UsernameDto;
 import org.example.exceptions.UserAlreadyExistsException;
-import org.example.model.User;
 import org.example.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +20,7 @@ public class UserController {
 
     @PatchMapping("/username")
     public ResponseEntity<?> changeUsername(@RequestBody UsernameDto usernameDto) throws UserAlreadyExistsException {
-        UserDto updatedUser = userService.changeUsername(usernameDto.getNewUsername());
+        UserDto updatedUser = userService.changeUsername(usernameDto.getUsername());
         return ResponseEntity.ok(updatedUser);
     }
 

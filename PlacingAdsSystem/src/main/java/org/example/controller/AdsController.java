@@ -65,6 +65,12 @@ public class AdsController {
         return ResponseEntity.ok(new MessageResponse("Advertisement successfully deleted"));
     }
 
+    @PostMapping("/{adsId}/mark-sold")
+    public ResponseEntity<?> markAsSold(@PathVariable("adsId") Long adsId, @RequestBody UsernameDto usernameDto) {
+        AdsDto updatedAds = adsService.markAsSold(adsId, usernameDto.getUsername());
+        return ResponseEntity.ok(updatedAds);
+    }
+
     @GetMapping("/search")
     public ResponseEntity<List<AdsDto>> searchAds(
             @RequestParam(name = "keyword", required = false) String keyword,

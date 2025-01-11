@@ -38,6 +38,9 @@ public class Ads {
     private byte[] mainImage;
     @OneToMany(mappedBy = "ads", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<AdsImage> additionalImages;
+    @ManyToOne
+    @JoinColumn(name = "buyer_id")
+    private User buyer;
 
     public Ads() {
     }
@@ -149,6 +152,14 @@ public class Ads {
 
     public void setAdditionalImages(List<AdsImage> additionalImages) {
         this.additionalImages = additionalImages;
+    }
+
+    public User getBuyer() {
+        return buyer;
+    }
+
+    public void setBuyer(User buyer) {
+        this.buyer = buyer;
     }
 
     @Override

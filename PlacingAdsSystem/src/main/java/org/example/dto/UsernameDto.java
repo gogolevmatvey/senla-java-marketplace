@@ -3,13 +3,13 @@ package org.example.dto;
 import java.io.Serializable;
 
 public class UsernameDto implements Serializable {
-    private String newUsername;
+    private String username;
 
-    public String getNewUsername() {
-        return newUsername;
+    public String getUsername() {
+        return username;
     }
 
-    public void setNewUsername(String newUsername) {
-        this.newUsername = newUsername;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

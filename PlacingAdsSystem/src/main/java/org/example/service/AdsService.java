@@ -54,6 +54,7 @@ public class AdsService {
         validateCommentPermissions(ads);
         validateCommentRating(commentDto.getRating());
         validateSingleCommentPerUser(ads);
+        validateBuyerPermissions(ads);
 
         Comment comment = commentMapper.toEntity(commentDto);
         User currentUser = getCurrentUser();
@@ -99,6 +100,13 @@ public class AdsService {
         User currentUser = getCurrentUser();
         if (commentDao.hasUserCommented(ads.getId(), currentUser.getId())) {
             throw new IllegalStateException("You have already commented on this advertisement");
+        }
+    }
+
+    private void validateBuyerPermissions(Ads ads) {
+        User currentUser = getCurrentUser();
+        if (!currentUser.getId().equals(ads.getBuyer().getId())) {
+            throw new IllegalStateException("Only the buyer can leave a rating comment");
         }
     }
 
@@ -287,6 +295,30 @@ public class AdsService {
         ads.setStatus(AdsStatus.DELETED);
         adsDao.update(ads);
         logger.info("Advertisement with id: {} has been marked as deleted", adsId);
+    }
+
+    public AdsDto markAsSold(Long adsId, String buyerName) {
+        User currentUser = getCurrentUser();
+        User buyer = userDao.findUserByUsername(buyerName);
+        Ads ads = adsDao.read(adsId);
+
+        if (buyer == null) {
+            throw new IllegalArgumentException("Buyer not found");
+        }
+
+        isAdsExist(adsId, ads);
+        validateUserPermissions(ads);
+
+        if (!ads.getStatus().equals(AdsStatus.ACTIVE)) {
+            throw new IllegalStateException("Only active advertisements can be marked as sold");
+        }
+
+        ads.setStatus(AdsStatus.SOLD);
+        ads.setBuyer(buyer);
+        adsDao.update(ads);
+
+        logger.info("Advertisement ID: {} marked as SOLD. Buyer: {}", adsId, buyer.getUsername());
+        return adsMapper.toDto(ads);
     }
 
     public Ads getAdsById(int id) {
