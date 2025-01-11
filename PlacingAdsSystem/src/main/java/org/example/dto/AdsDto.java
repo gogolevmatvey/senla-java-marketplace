@@ -4,6 +4,7 @@ import org.example.model.AdsStatus;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 public class AdsDto implements Serializable {
     private Long id;
@@ -15,6 +16,7 @@ public class AdsDto implements Serializable {
     private LocalDate creationDate;
     private LocalDate promotionEndDate;
     private AdsStatus status;
+    private List<CommentDto> comments;
     private byte[] mainImage;
 
     public AdsDto() {
@@ -97,6 +99,14 @@ public class AdsDto implements Serializable {
 
     public void setStatus(AdsStatus status) {
         this.status = status;
+    }
+
+    public List<CommentDto> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CommentDto> comments) {
+        this.comments = comments;
     }
 
     public byte[] getMainImage() {

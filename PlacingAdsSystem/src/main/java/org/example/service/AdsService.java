@@ -343,10 +343,12 @@ public class AdsService {
         return adsMapper.toDto(ads);
     }
 
-    public List<AdsDto> searchAds(String keyword, String category, Double minPrice, Double maxPrice) {
+    public List<AdsDto> searchAds(String keyword, String category, Double minPrice, Double maxPrice, AdsStatus status) {
+        if (status == null)
+            status = AdsStatus.ACTIVE;
         validateSearchInput(minPrice, maxPrice);
 
-        List<Ads> foundAds = adsDao.searchAds(keyword, category, minPrice, maxPrice);
+        List<Ads> foundAds = adsDao.searchAds(keyword, category, minPrice, maxPrice, status);
 
         return foundAds.stream().map(adsMapper::toDto).collect(Collectors.toList());
     }

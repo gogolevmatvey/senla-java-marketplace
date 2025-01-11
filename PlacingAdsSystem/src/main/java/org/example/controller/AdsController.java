@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.dto.*;
+import org.example.model.AdsStatus;
 import org.example.service.AdsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -76,9 +77,10 @@ public class AdsController {
             @RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam(name = "category", required = false) String category,
             @RequestParam(name = "minPrice", required = false) Double minPrice,
-            @RequestParam(name = "maxPrice", required = false) Double maxPrice) {
+            @RequestParam(name = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(name = "status", required = false) AdsStatus status) {
 
-        List<AdsDto> ads = adsService.searchAds(keyword, category, minPrice, maxPrice);
+        List<AdsDto> ads = adsService.searchAds(keyword, category, minPrice, maxPrice, status);
         return ResponseEntity.ok(ads);
     }
 

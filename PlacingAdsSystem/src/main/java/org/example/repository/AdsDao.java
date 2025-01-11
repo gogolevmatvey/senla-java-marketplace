@@ -21,10 +21,9 @@ public class AdsDao extends GenericDao<Ads>{
         super(Ads.class, entityManagerFactory);
     }
 
-    public List<Ads> searchAds(String keyword, String category, Double minPrice, Double maxPrice) {
+    public List<Ads> searchAds(String keyword, String category, Double minPrice, Double maxPrice, AdsStatus status) {
         StringBuilder hql = new StringBuilder("FROM Ads a WHERE 1=1");
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("status", AdsStatus.ACTIVE);
 
         if (keyword != null && !keyword.trim().isEmpty()) {
             hql.append(" AND (lower(a.title) like :keyword OR lower(a.description) like :keyword)");
@@ -45,6 +44,9 @@ public class AdsDao extends GenericDao<Ads>{
             hql.append(" AND a.price <= :maxPrice");
             parameters.put("maxPrice", maxPrice);
         }
+
+        if (status == AdsStatus.ACTIVE || status == AdsStatus.SOLD)
+            parameters.put("status", status);
 
         hql.append(" AND a.status = :status");
 

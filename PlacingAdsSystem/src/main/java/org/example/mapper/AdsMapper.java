@@ -19,6 +19,7 @@ public interface AdsMapper {
     @Mapping(target = "creationDate", source = "creationDate")
     @Mapping(target = "promotionEndDate", source = "promotionEndDate")
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "comments", source = "comments")
     @Mapping(target = "mainImage", source = "mainImage")
     AdsDto toDto(Ads ads);
 
