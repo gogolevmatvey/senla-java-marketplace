@@ -1,5 +1,6 @@
 package org.example.dto;
 
+import org.example.model.SaleHistory;
 import org.example.model.UserRole;
 
 import java.io.Serializable;
@@ -13,6 +14,8 @@ public class UserDto implements Serializable {
     private Double sellerRating;
     private List<Long> advertisementIds;
     private byte[] profilePicture;
+    private List<SaleHistoryDto> salesAsSeller;
+    private List<SaleHistoryDto> salesAsBuyer;
 
     public Long getId() {
         return id;

@@ -1,14 +1,19 @@
 package org.example.service;
 
+import org.example.dto.SaleHistoryDto;
 import org.example.dto.UserDto;
 import org.example.exceptions.UserAlreadyExistsException;
+import org.example.mapper.SaleHistoryMapper;
 import org.example.mapper.UserMapper;
+import org.example.model.SaleHistory;
 import org.example.model.User;
 import org.example.model.UserRole;
+import org.example.repository.SaleHistoryDao;
 import org.example.repository.UserDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -16,21 +21,28 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.regex.Pattern;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class UserService {
     private final UserDao userDao;
+    private final SaleHistoryDao saleHistoryDao;
     private final UserMapper userMapper;
+    private final SaleHistoryMapper saleHistoryMapper;
     private final PasswordEncoder passwordEncoder;
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     // RFC 5322 Official Standard
     private static final Pattern EMAIL_PATTERN = Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
 
-    public UserService(UserDao userDao, UserMapper userMapper, PasswordEncoder passwordEncoder) {
+    public UserService(UserDao userDao, SaleHistoryDao saleHistoryDao, UserMapper userMapper,
+                       SaleHistoryMapper saleHistoryMapper, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
+        this.saleHistoryDao = saleHistoryDao;
         this.userMapper = userMapper;
+        this.saleHistoryMapper = saleHistoryMapper;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -118,6 +130,13 @@ public class UserService {
         }
     }
 
-
+    public List<SaleHistoryDto> getUserSales(String username) {
+        User user = userDao.findUserByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User with username " + username + " not found");
+        }
+        List<SaleHistory> sales = saleHistoryDao.findSalesByUser(user.getId());
+        return saleHistoryMapper.toDtoList(sales);
+    }
 
 }

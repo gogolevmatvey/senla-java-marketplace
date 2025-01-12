@@ -4,12 +4,10 @@ import org.example.dto.AdsDto;
 import org.example.dto.CommentDto;
 import org.example.mapper.AdsMapper;
 import org.example.mapper.CommentMapper;
-import org.example.model.Ads;
-import org.example.model.AdsStatus;
-import org.example.model.Comment;
-import org.example.model.User;
+import org.example.model.*;
 import org.example.repository.AdsDao;
 import org.example.repository.CommentDao;
+import org.example.repository.SaleHistoryDao;
 import org.example.repository.UserDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +28,7 @@ public class AdsService {
     private AdsDao adsDao;
     private UserDao userDao;
     private CommentDao commentDao;
+    private SaleHistoryDao saleHistoryDao;
     private AdsMapper adsMapper;
     private CommentMapper commentMapper;
     private static final Logger logger = LoggerFactory.getLogger(AdsService.class);
@@ -39,10 +38,12 @@ public class AdsService {
     @Value("${ads.description.max-length}")
     private int descriptionMaxLength;
 
-    public AdsService(AdsDao adsDao, UserDao userDao, CommentDao commentDao, AdsMapper adsMapper, CommentMapper commentMapper) {
+    public AdsService(AdsDao adsDao, UserDao userDao, CommentDao commentDao, SaleHistoryDao saleHistoryDao,
+                      AdsMapper adsMapper, CommentMapper commentMapper) {
         this.adsDao = adsDao;
         this.userDao = userDao;
         this.commentDao = commentDao;
+        this.saleHistoryDao = saleHistoryDao;
         this.adsMapper = adsMapper;
         this.commentMapper = commentMapper;
     }
@@ -124,6 +125,7 @@ public class AdsService {
         newAds.setUser(currentUser);
         newAds.setCreationDate(LocalDate.now());
         newAds.setStatus(AdsStatus.ACTIVE);
+        newAds.setPromoted(false);
         adsDao.create(newAds);
         logger.info("Ads {} is added to DB.", newAds);
         return adsMapper.toDto(newAds);
@@ -316,6 +318,9 @@ public class AdsService {
         ads.setStatus(AdsStatus.SOLD);
         ads.setBuyer(buyer);
         adsDao.update(ads);
+
+        SaleHistory saleHistory = new SaleHistory(currentUser, buyer, ads, ads.getPrice());
+        saleHistoryDao.create(saleHistory);
 
         logger.info("Advertisement ID: {} marked as SOLD. Buyer: {}", adsId, buyer.getUsername());
         return adsMapper.toDto(ads);

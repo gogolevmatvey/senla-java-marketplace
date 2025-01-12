@@ -32,6 +32,7 @@ public interface AdsMapper {
     @Mapping(target = "category", source = "category")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "price", source = "price")
+    @Mapping(target = "promoted", source = "promoted")
     Ads toEntity(AdsDto adsDto);
 
     List<Ads> toEntityList(List<AdsDto> adsDtoList);

@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.dto.EmailDto;
+import org.example.dto.SaleHistoryDto;
 import org.example.dto.UserDto;
 import org.example.dto.UsernameDto;
 import org.example.exceptions.UserAlreadyExistsException;
@@ -8,6 +9,8 @@ import org.example.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -34,5 +37,11 @@ public class UserController {
     public ResponseEntity<?> uploadAvatar(@RequestParam("avatar") MultipartFile avatar) {
         UserDto updatedUser = userService.setAvatar(avatar);
         return ResponseEntity.ok(updatedUser);
+    }
+
+    @GetMapping("/{username}/sales")
+    public ResponseEntity<List<SaleHistoryDto>> getUserSales(@PathVariable("username") String username) {
+        List<SaleHistoryDto> sales = userService.getUserSales(username);
+        return ResponseEntity.ok(sales);
     }
 }

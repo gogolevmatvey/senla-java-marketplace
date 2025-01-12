@@ -25,8 +25,11 @@ public class User {
     private Double sellerRating = 0.0;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Ads> advertisements;
+    @OneToMany(mappedBy = "seller")
+    private List<SaleHistory> sales = new ArrayList<>();
     @Column(name = "user_picture")
     private byte[] profilePicture;
+
 
     public User() {}
 
@@ -94,6 +97,14 @@ public class User {
 
     public void setAdvertisements(List<Ads> advertisements) {
         this.advertisements = advertisements;
+    }
+
+    public List<SaleHistory> getSales() {
+        return sales;
+    }
+
+    public void setSales(List<SaleHistory> sales) {
+        this.sales = sales;
     }
 
     public byte[] getProfilePicture() {
