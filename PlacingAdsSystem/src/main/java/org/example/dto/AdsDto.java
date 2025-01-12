@@ -15,6 +15,8 @@ public class AdsDto implements Serializable {
     private String username;
     private Double sellerRating;
     private LocalDate creationDate;
+    private boolean promoted;
+    private LocalDate promotionStartDate;
     private LocalDate promotionEndDate;
     private AdsStatus status;
     private List<CommentDto> comments;
@@ -92,6 +94,22 @@ public class AdsDto implements Serializable {
 
     public void setCreationDate(LocalDate creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public boolean isPromoted() {
+        return promoted;
+    }
+
+    public void setPromoted(boolean promoted) {
+        this.promoted = promoted;
+    }
+
+    public LocalDate getPromotionStartDate() {
+        return promotionStartDate;
+    }
+
+    public void setPromotionStartDate(LocalDate promotionStartDate) {
+        this.promotionStartDate = promotionStartDate;
     }
 
     public LocalDate getPromotionEndDate() {

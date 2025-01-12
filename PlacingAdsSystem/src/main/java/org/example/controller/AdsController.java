@@ -89,4 +89,11 @@ public class AdsController {
         CommentDto createdComment = adsService.addComment(adsId, commentDto);
         return ResponseEntity.ok(createdComment);
     }
+
+    @PostMapping("/{adsId}/promote")
+    public ResponseEntity<?> promoteAds(@PathVariable("adsId") Long adsId,
+                                        @RequestBody PromotionDaysDto promotionDaysDto) {
+        AdsDto promotedAds = adsService.promoteAds(adsId, promotionDaysDto.getPromotionDays());
+        return ResponseEntity.ok(promotedAds);
+    }
 }

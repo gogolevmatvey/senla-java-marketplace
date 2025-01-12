@@ -366,4 +366,30 @@ public class AdsService {
             throw new IllegalArgumentException("Maximum price can't be negative");
         }
     }
+
+    public AdsDto promoteAds(Long adsId, int promotionDays) {
+        Ads ads = adsDao.read(adsId);
+        isAdsExist(adsId, ads);
+        validateUserPermissions(ads);
+        validatePromotionDays(promotionDays);
+
+        LocalDate now = LocalDate.now();
+        ads.setPromoted(true);
+        ads.setPromotionStartDate(now);
+        ads.setPromotionEndDate(now.plusDays(promotionDays));
+
+        adsDao.update(ads);
+        logger.info("Advertisement id: {} promoted for {} days", adsId, promotionDays);
+
+        return adsMapper.toDto(ads);
+    }
+
+    private void validatePromotionDays(int days) {
+        if (days <= 0) {
+            throw new IllegalArgumentException("Promotion period must be positive");
+        }
+        if (days > 30) {
+            throw new IllegalArgumentException("Maximum promotion period is 30 days");
+        }
+    }
 }
