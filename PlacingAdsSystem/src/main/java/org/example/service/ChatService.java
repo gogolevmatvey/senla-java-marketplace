@@ -36,7 +36,7 @@ public class ChatService {
         this.messageMapper = messageMapper;
     }
 
-    public ChatDto createChat(Long adsId) {
+    public ChatDto openChat(Long adsId) {
         User currentUser = getCurrentUser();
         Ads ads = adsDao.read(adsId);
 

@@ -2,7 +2,6 @@ package org.example.controller;
 
 import org.example.dto.ChatDto;
 import org.example.dto.MessageDto;
-import org.example.model.Message;
 import org.example.service.ChatService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +16,8 @@ public class ChatController {
     }
 
     @PostMapping("/ads/{adsId}")
-    public ResponseEntity<ChatDto> startChat(@PathVariable("adsId") Long adsId) {
-        return ResponseEntity.ok(chatService.createChat(adsId));
+    public ResponseEntity<ChatDto> openChat(@PathVariable("adsId") Long adsId) {
+        return ResponseEntity.ok(chatService.openChat(adsId));
     }
 
     @PostMapping("/{chatId}")

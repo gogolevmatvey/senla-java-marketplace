@@ -5,7 +5,7 @@ import org.example.model.Chat;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {MessageMapper.class})
 public interface ChatMapper {
     @Mapping(target = "adsId", source = "ads.id")
     @Mapping(target = "adsTitle", source = "ads.title")
