@@ -18,6 +18,12 @@ public class AdsController {
         this.adsService = adsService;
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<AdsDto> getAdsById(@PathVariable("id") Long id) {
+        AdsDto ads = adsService.getAdsById(id);
+        return ResponseEntity.ok(ads);
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> createAds(@RequestBody AdsDto adsDto) {
         AdsDto createdAds = adsService.createAds(adsDto);
@@ -63,7 +69,8 @@ public class AdsController {
     @DeleteMapping("/{adsId}")
     public ResponseEntity<?> deleteAds(@PathVariable("adsId") Long adsId) {
         adsService.deleteAds(adsId);
-        return ResponseEntity.ok(new MessageResponse("Advertisement successfully deleted"));
+        //return ResponseEntity.ok(new MessageResponse("Advertisement successfully deleted"));
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{adsId}/mark-sold")
@@ -82,12 +89,6 @@ public class AdsController {
 
         List<AdsDto> ads = adsService.searchAds(keyword, category, minPrice, maxPrice, status);
         return ResponseEntity.ok(ads);
-    }
-
-    @PostMapping("/{adsId}/comment")
-    public ResponseEntity<?> addComment(@PathVariable("adsId") Long adsId, @RequestBody CommentDto commentDto) {
-        CommentDto createdComment = adsService.addComment(adsId, commentDto);
-        return ResponseEntity.ok(createdComment);
     }
 
     @PostMapping("/{adsId}/promote")

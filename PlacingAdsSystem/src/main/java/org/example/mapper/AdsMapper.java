@@ -8,7 +8,7 @@ import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", uses = {CommentMapper.class})
 public interface AdsMapper {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "title", source = "title")

@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.dto.AdsDto;
 import org.example.dto.CommentDto;
+import org.example.exceptions.AdsNotFoundException;
 import org.example.mapper.AdsMapper;
 import org.example.mapper.CommentMapper;
 import org.example.model.*;
@@ -46,76 +47,6 @@ public class AdsService {
         this.saleHistoryDao = saleHistoryDao;
         this.adsMapper = adsMapper;
         this.commentMapper = commentMapper;
-    }
-
-    public CommentDto addComment(Long adsId, CommentDto commentDto) {
-        Ads ads = adsDao.read(adsId);
-        isAdsExist(adsId, ads);
-        isAdsSold(ads);
-        validateCommentPermissions(ads);
-        validateCommentRating(commentDto.getRating());
-        validateSingleCommentPerUser(ads);
-        validateBuyerPermissions(ads);
-
-        Comment comment = commentMapper.toEntity(commentDto);
-        User currentUser = getCurrentUser();
-        comment.setAds(ads);
-        comment.setUser(currentUser);
-        comment.setCreationDate(LocalDate.now());
-
-        ads.getComments().add(comment);
-        adsDao.update(ads);
-
-        User seller = ads.getUser();
-        updateSellerRating(seller);
-
-        logger.info("New comment added to ad {} by user {}", adsId, currentUser.getUsername());
-
-        Comment savedComment = ads.getComments().get(ads.getComments().size() - 1);
-        return commentMapper.toDto(savedComment);
-    }
-
-    private void isAdsSold(Ads ads) {
-        if (ads.getStatus() != AdsStatus.SOLD) {
-            throw new IllegalStateException("Comments can only be added to purchased items");
-        }
-    }
-
-    private void validateCommentPermissions(Ads ads) {
-        if (ads.getUser().getId().equals(getCurrentUser().getId())) {
-            throw new IllegalStateException("You can't comment on your own advertisement");
-        }
-    }
-
-    private void validateCommentRating(Integer rating) {
-        if (rating == null) {
-            throw new IllegalArgumentException("Rating value is required");
-        }
-
-        if (rating < 1 || rating > 5) {
-            throw new IllegalArgumentException("Rating must be between 1 and 5");
-        }
-    }
-
-    private void validateSingleCommentPerUser(Ads ads) {
-        User currentUser = getCurrentUser();
-        if (commentDao.hasUserCommented(ads.getId(), currentUser.getId())) {
-            throw new IllegalStateException("You have already commented on this advertisement");
-        }
-    }
-
-    private void validateBuyerPermissions(Ads ads) {
-        User currentUser = getCurrentUser();
-        if (!currentUser.getId().equals(ads.getBuyer().getId())) {
-            throw new IllegalStateException("Only the buyer can leave a rating comment");
-        }
-    }
-
-    private void updateSellerRating(User seller) {
-        Double newRating = userDao.calculateAverageSellerRating(seller.getId());
-        seller.setSellerRating(newRating);
-        userDao.update(seller);
-        logger.info("Seller {} rating updated to {}", seller.getUsername(), newRating);
     }
 
     public AdsDto createAds(AdsDto adsDto) {
@@ -191,11 +122,12 @@ public class AdsService {
 
     private void isAdsExist(Long adsId, Ads ads) {
         if (ads == null) {
-            throw new IllegalArgumentException("Advertisement not found with id: " + adsId);
+            throw new AdsNotFoundException("Advertisement not found with id: " + adsId);
         }
     }
 
     private void validateUserPermissions(Ads ads) {
+
         User currentUser = getCurrentUser();
         if (!ads.getUser().getId().equals(currentUser.getId())) {
             throw new IllegalStateException("User doesn't have permission to modify this advertisement");
@@ -299,6 +231,12 @@ public class AdsService {
         logger.info("Advertisement with id: {} has been marked as deleted", adsId);
     }
 
+    public AdsDto getAdsById(Long adsId) {
+        Ads ads = adsDao.read(adsId);
+        isAdsExist(adsId, ads);
+        return adsMapper.toDto(ads);
+    }
+
     public AdsDto markAsSold(Long adsId, String buyerName) {
         User currentUser = getCurrentUser();
         User buyer = userDao.findUserByUsername(buyerName);
@@ -326,9 +264,6 @@ public class AdsService {
         return adsMapper.toDto(ads);
     }
 
-    public Ads getAdsById(int id) {
-        return adsDao.read(id);
-    }
 
     public AdsDto setMainImage(Long adsId, MultipartFile image) {
         validateImage(image);
