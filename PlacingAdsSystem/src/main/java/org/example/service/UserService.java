@@ -55,6 +55,35 @@ public class UserService {
         return user;
     }
 
+    public UserDto updateUserData(UserDto userDto) throws UserAlreadyExistsException {
+        User currentUser = getCurrentUser();
+
+        if (userDto.getUsername() != null && !userDto.getUsername().equals(currentUser.getUsername())) {
+            if (userDao.findUserByUsername(userDto.getUsername()) != null) {
+                throw new UserAlreadyExistsException("Username " + userDto.getUsername() + " is already taken");
+            }
+            currentUser.setUsername(userDto.getUsername());
+        }
+
+        if (userDto.getEmail() != null && !userDto.getEmail().equals(currentUser.getEmail())) {
+            validateEmail(userDto.getEmail());
+            currentUser.setEmail(userDto.getEmail());
+        }
+
+        if (userDto.getRole() != null) {
+            currentUser.setRole(userDto.getRole());
+        }
+
+        if (userDto.getProfilePicture() != null) {
+            currentUser.setProfilePicture(userDto.getProfilePicture());
+        }
+
+        userDao.update(currentUser);
+        logger.info("Updated user data for user: {}", currentUser.getUsername());
+
+        return userMapper.toDto(currentUser);
+    }
+
     public UserDto changeUsername(String newUsername) throws UserAlreadyExistsException {
         User currentUser = getCurrentUser();
         User userWithNewUsername = userDao.findUserByUsername(newUsername);

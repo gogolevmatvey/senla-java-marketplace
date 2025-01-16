@@ -30,6 +30,12 @@ public class AdsController {
         return ResponseEntity.ok(createdAds);
     }
 
+    @PatchMapping("/{adsId}")
+    public ResponseEntity<?> updateAds(@PathVariable("adsId") Long adsId, @RequestBody AdsDto adsDto) {
+        AdsDto updatedAds = adsService.updateAds(adsId, adsDto);
+        return ResponseEntity.ok(updatedAds);
+    }
+
     @PatchMapping("/{adsId}/main-image")
     public ResponseEntity<?> setMainImage(@PathVariable("adsId") Long id, @RequestParam("image") MultipartFile image) {
         AdsDto adsDto = adsService.setMainImage(id, image);

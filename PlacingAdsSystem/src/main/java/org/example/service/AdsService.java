@@ -96,6 +96,42 @@ public class AdsService {
         }
     }
 
+    public AdsDto updateAds(Long adsId, AdsDto adsDto) {
+        Ads ads = adsDao.read(adsId);
+        isAdsExist(adsId, ads);
+        validateUserPermissions(ads);
+
+        if (adsDto.getTitle() != null) {
+            validateTitle(adsDto.getTitle());
+            ads.setTitle(adsDto.getTitle());
+        }
+
+        if (adsDto.getDescription() != null) {
+            validateDescription(adsDto.getDescription());
+            ads.setDescription(adsDto.getDescription());
+        }
+
+        if (adsDto.getCategory() != null) {
+            validateCategory(adsDto.getCategory());
+            ads.setCategory(adsDto.getCategory());
+        }
+
+        if (adsDto.getPrice() != null) {
+            validatePrice(adsDto.getPrice());
+            ads.setPrice(adsDto.getPrice());
+        }
+
+        if (adsDto.getStatus() != null) {
+            validateStatus(adsDto.getStatus());
+            ads.setStatus(adsDto.getStatus());
+        }
+
+        adsDao.update(ads);
+        logger.info("Advertisement with id: {} has been updated", adsId);
+
+        return adsMapper.toDto(ads);
+    }
+
     public AdsDto changeTitle(Long adsId, String newTitle) {
         Ads ads = adsDao.read(adsId);
         isAdsExist(adsId, ads);
