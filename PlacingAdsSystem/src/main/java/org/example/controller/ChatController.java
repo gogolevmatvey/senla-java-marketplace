@@ -15,14 +15,24 @@ public class ChatController {
         this.chatService = chatService;
     }
 
-    @PostMapping("/ads/{adsId}")
+    @GetMapping("/ads/{adsId}")
     public ResponseEntity<ChatDto> openChat(@PathVariable("adsId") Long adsId) {
         return ResponseEntity.ok(chatService.openChat(adsId));
     }
 
-    @PostMapping("/{chatId}")
-    public ResponseEntity<MessageDto> sendMessage(@PathVariable("chatId") Long chatId, @RequestBody MessageDto messageDto) {
-        MessageDto sentMessage = chatService.sendMessage(chatId, messageDto.getContent());
-        return ResponseEntity.ok(sentMessage);
+    @PostMapping("/ads/{adsId}")
+    public ResponseEntity<MessageDto> sendMessage(@PathVariable("adsId") Long adsId, @RequestBody MessageDto messageDto) {
+        return ResponseEntity.ok(chatService.sendMessage(adsId, messageDto.getContent()));
+    }
+
+    @PatchMapping("/ads/{adsId}/messages/{messageId}")
+    public ResponseEntity<MessageDto> editMessage(@PathVariable("messageId") Long messageId, @RequestBody MessageDto messageDto) {
+        return ResponseEntity.ok(chatService.editMessage(messageId, messageDto.getContent()));
+    }
+
+    @DeleteMapping("/ads/{adsId}/messages/{messageId}")
+    public ResponseEntity<Void> deleteMessage(@PathVariable("messageId") Long messageId) {
+        chatService.deleteMessage(messageId);
+        return ResponseEntity.noContent().build();
     }
 }

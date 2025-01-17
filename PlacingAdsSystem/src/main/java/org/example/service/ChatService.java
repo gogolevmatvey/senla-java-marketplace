@@ -4,10 +4,7 @@ import org.example.dto.ChatDto;
 import org.example.dto.MessageDto;
 import org.example.mapper.ChatMapper;
 import org.example.mapper.MessageMapper;
-import org.example.model.Ads;
-import org.example.model.Chat;
-import org.example.model.Message;
-import org.example.model.User;
+import org.example.model.*;
 import org.example.repository.AdsDao;
 import org.example.repository.ChatDao;
 import org.example.repository.MessageDao;
@@ -59,9 +56,15 @@ public class ChatService {
         return userDao.findUserByUsername(username);
     }
 
-    public MessageDto sendMessage(Long chatId, String content) {
+    public MessageDto sendMessage(Long adsId, String content) {
         User sender = getCurrentUser();
-        Chat chat = chatDao.read(chatId);
+        Ads ads = adsDao.read(adsId);
+        Chat chat = chatDao.findByAdsAndBuyer(adsId, sender.getId());
+
+        if (chat == null) {
+            chat = new Chat(ads, sender);
+            chatDao.create(chat);
+        }
 
         User receiver = sender.getId().equals(chat.getBuyer().getId())
                 ? chat.getAds().getUser()
@@ -70,5 +73,37 @@ public class ChatService {
         Message message = new Message(chat, sender, receiver, content);
         messageDao.create(message);
         return messageMapper.toDto(message);
+    }
+
+    public MessageDto editMessage(Long messageId, String newContent) {
+        Message message = messageDao.read(messageId);
+
+        validateMessageSender(message);
+
+        message.setContent(newContent);
+        messageDao.update(message);
+
+        return messageMapper.toDto(message);
+    }
+
+    private void validateMessageSender(Message message) {
+        User currentUser = getCurrentUser();
+
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            return;
+        }
+
+        if (!message.getSender().getId().equals(currentUser.getId())) {
+            throw new IllegalStateException("Only message sender can edit the message");
+        }
+    }
+
+    public void deleteMessage(Long messageId) {
+        Message message = messageDao.read(messageId);
+        User currentUser = getCurrentUser();
+
+        validateMessageSender(message);
+
+        messageDao.delete(message.getId());
     }
 }
