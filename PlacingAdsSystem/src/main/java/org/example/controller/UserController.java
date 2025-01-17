@@ -21,6 +21,12 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/profile")
+    public ResponseEntity<UserDto> getCurrentUserInfo() {
+        UserDto currentUser = userService.getCurrentUserInfo();
+        return ResponseEntity.ok(currentUser);
+    }
+
     @PatchMapping("/update")
     public ResponseEntity<?> updateUserData(@RequestBody UserDto userDto) throws UserAlreadyExistsException {
         UserDto updatedUser = userService.updateUserData(userDto);

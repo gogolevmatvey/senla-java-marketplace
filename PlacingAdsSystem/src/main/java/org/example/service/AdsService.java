@@ -28,10 +28,8 @@ import java.util.stream.Collectors;
 public class AdsService {
     private AdsDao adsDao;
     private UserDao userDao;
-    private CommentDao commentDao;
     private SaleHistoryDao saleHistoryDao;
     private AdsMapper adsMapper;
-    private CommentMapper commentMapper;
     private static final Logger logger = LoggerFactory.getLogger(AdsService.class);
 
     @Value("${ads.title.max-length}")
@@ -43,10 +41,7 @@ public class AdsService {
                       AdsMapper adsMapper, CommentMapper commentMapper) {
         this.adsDao = adsDao;
         this.userDao = userDao;
-        this.commentDao = commentDao;
         this.saleHistoryDao = saleHistoryDao;
-        this.adsMapper = adsMapper;
-        this.commentMapper = commentMapper;
     }
 
     public AdsDto createAds(AdsDto adsDto) {
@@ -92,7 +87,7 @@ public class AdsService {
             throw new IllegalArgumentException("Description can't be longer than " + descriptionMaxLength + " characters");
         }
         if (ads.getPrice() < 0) {
-            throw new IllegalArgumentException("Цена не может быть меньше нуля.");
+            throw new IllegalArgumentException("Price can't be negative");
         }
     }
 
@@ -166,6 +161,7 @@ public class AdsService {
 
         User currentUser = getCurrentUser();
         if (!ads.getUser().getId().equals(currentUser.getId())) {
+            // AccessDeniedException
             throw new IllegalStateException("User doesn't have permission to modify this advertisement");
         }
     }

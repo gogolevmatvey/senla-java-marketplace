@@ -129,9 +129,9 @@ public class UserService {
         }
     }
 
-    public User findUserById(long id) {
-        User user = userDao.read(id);
-        return user;
+    public UserDto getCurrentUserInfo() {
+        User currentUser = getCurrentUser();
+        return userMapper.toDto(currentUser);
     }
 
     public UserDto setAvatar(MultipartFile avatar) {
