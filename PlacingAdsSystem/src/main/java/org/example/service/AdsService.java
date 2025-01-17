@@ -158,8 +158,12 @@ public class AdsService {
     }
 
     private void validateUserPermissions(Ads ads) {
-
         User currentUser = getCurrentUser();
+
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            return;
+        }
+
         if (!ads.getUser().getId().equals(currentUser.getId())) {
             // AccessDeniedException
             throw new IllegalStateException("User doesn't have permission to modify this advertisement");

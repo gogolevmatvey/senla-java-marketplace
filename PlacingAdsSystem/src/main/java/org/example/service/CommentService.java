@@ -3,10 +3,7 @@ package org.example.service;
 import org.example.dto.CommentDto;
 import org.example.exceptions.CommentNotFoundException;
 import org.example.mapper.CommentMapper;
-import org.example.model.Ads;
-import org.example.model.AdsStatus;
-import org.example.model.Comment;
-import org.example.model.User;
+import org.example.model.*;
 import org.example.repository.AdsDao;
 import org.example.repository.CommentDao;
 import org.example.repository.UserDao;
@@ -79,7 +76,13 @@ public class CommentService {
     }
 
     private void validateCommentPermissions(Ads ads) {
-        if (ads.getUser().getId().equals(getCurrentUser().getId())) {
+        User currentUser = getCurrentUser();
+
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            return;
+        }
+
+        if (ads.getUser().getId().equals(currentUser.getId())) {
             throw new IllegalStateException("You can't comment on your own advertisement");
         }
     }
@@ -96,6 +99,11 @@ public class CommentService {
 
     private void validateSingleCommentPerUser(Ads ads) {
         User currentUser = getCurrentUser();
+
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            return;
+        }
+
         if (commentDao.hasUserCommented(ads.getId(), currentUser.getId())) {
             throw new IllegalStateException("You have already commented on this advertisement");
         }
@@ -103,6 +111,11 @@ public class CommentService {
 
     private void validateBuyerPermissions(Ads ads) {
         User currentUser = getCurrentUser();
+
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            return;
+        }
+
         if (!currentUser.getId().equals(ads.getBuyer().getId())) {
             throw new IllegalStateException("Only the buyer can leave a rating comment");
         }
@@ -150,6 +163,11 @@ public class CommentService {
 
     private void validateCommentOwnership(Comment comment) {
         User currentUser = getCurrentUser();
+
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            return;
+        }
+
         if (!comment.getUser().getId().equals(currentUser.getId())) {
             throw new IllegalStateException("You can only edit your own comments");
         }
