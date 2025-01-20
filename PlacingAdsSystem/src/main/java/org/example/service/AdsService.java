@@ -46,6 +46,48 @@ public class AdsService {
         this.adsMapper = adsMapper;
     }
 
+    public AdsDto purchaseAds(Long adsId) {
+        User buyer = getCurrentUser();
+        Ads ads = adsDao.read(adsId);
+        isAdsExist(adsId, ads);
+
+        if (!ads.getStatus().equals(AdsStatus.ACTIVE)) {
+            throw new IllegalStateException("Only active advertisements can be purchased");
+        }
+
+        if (ads.getUser().getId().equals(buyer.getId())) {
+            throw new IllegalStateException("You can't purchase your own advertisement");
+        }
+
+        validateUserBalance(ads.getPrice());
+
+        buyer.setBalance(buyer.getBalance() - ads.getPrice());
+        ads.getUser().setBalance(ads.getUser().getBalance() + ads.getPrice());
+
+        ads.setStatus(AdsStatus.SOLD);
+        ads.setBuyer(buyer);
+
+        userDao.update(buyer);
+        userDao.update(ads.getUser());
+        adsDao.update(ads);
+
+        SaleHistory saleHistory = new SaleHistory(ads.getUser(), buyer, ads, ads.getPrice());
+        saleHistoryDao.create(saleHistory);
+
+        logger.info("Advertisement ID: {} purchased by user: {} for price: {}",
+                adsId, buyer.getUsername(), ads.getPrice());
+
+        return adsMapper.toDto(ads);
+    }
+
+    private void validateUserBalance(double requiredAmount) {
+        User currentUser = getCurrentUser();
+        if (currentUser.getBalance() < requiredAmount) {
+            throw new IllegalStateException("Insufficient funds. Required: " + requiredAmount + ", Available: "
+                    + currentUser.getBalance());
+        }
+    }
+
     public AdsDto createAds(AdsDto adsDto) {
         Ads newAds = adsMapper.toEntity(adsDto);
         validateAds(newAds);
@@ -168,7 +210,7 @@ public class AdsService {
 
         if (!ads.getUser().getId().equals(currentUser.getId())) {
             // AccessDeniedException
-            throw new IllegalStateException("User doesn't have permission to modify this advertisement");
+            throw new IllegalStateException("User doesn't have permission to modify this advertisement.");
         }
     }
 
@@ -355,9 +397,7 @@ public class AdsService {
         User currentUser = getCurrentUser();
         double totalCost = promotionDays * promotionDailyPrice;
 
-        if (currentUser.getBalance() < totalCost) {
-            throw new IllegalStateException("Insufficient funds. Required: " + totalCost + ", Available: " + currentUser.getBalance());
-        }
+        validateUserBalance(totalCost);
 
         currentUser.setBalance(currentUser.getBalance() - totalCost);
         userDao.update(currentUser);

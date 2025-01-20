@@ -103,4 +103,10 @@ public class AdsController {
         AdsDto promotedAds = adsService.promoteAds(adsId, promotionDaysDto.getPromotionDays());
         return ResponseEntity.ok(promotedAds);
     }
+
+    @PostMapping("/{adsId}/purchase")
+    public ResponseEntity<AdsDto> purchaseAds(@PathVariable("adsId") Long adsId) {
+        AdsDto purchasedAds = adsService.purchaseAds(adsId);
+        return ResponseEntity.ok(purchasedAds);
+    }
 }
