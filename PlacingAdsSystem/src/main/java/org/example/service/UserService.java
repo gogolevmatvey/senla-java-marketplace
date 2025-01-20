@@ -55,6 +55,24 @@ public class UserService {
         return user;
     }
 
+    public UserDto addBalance(String username, Double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
+
+        User user = userDao.findUserByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User with username " + username + " not found");
+        }
+
+        Double currentBalance = user.getBalance();
+        user.setBalance(currentBalance + amount);
+        userDao.update(user);
+
+        logger.info("Added balance {} to user {}, new balance: {}", amount, username, user.getBalance());
+        return userMapper.toDto(user);
+    }
+
     public UserDto updateUserData(UserDto userDto) throws UserAlreadyExistsException {
         User currentUser = getCurrentUser();
 

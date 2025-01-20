@@ -36,12 +36,14 @@ public class AdsService {
     private int titleMaxLength;
     @Value("${ads.description.max-length}")
     private int descriptionMaxLength;
+    @Value("${ads.promotion.daily-price}")
+    private double promotionDailyPrice;
 
-    public AdsService(AdsDao adsDao, UserDao userDao, CommentDao commentDao, SaleHistoryDao saleHistoryDao,
-                      AdsMapper adsMapper, CommentMapper commentMapper) {
+    public AdsService(AdsDao adsDao, UserDao userDao, SaleHistoryDao saleHistoryDao, AdsMapper adsMapper) {
         this.adsDao = adsDao;
         this.userDao = userDao;
         this.saleHistoryDao = saleHistoryDao;
+        this.adsMapper = adsMapper;
     }
 
     public AdsDto createAds(AdsDto adsDto) {
@@ -322,6 +324,7 @@ public class AdsService {
     public List<AdsDto> searchAds(String keyword, String category, Double minPrice, Double maxPrice, AdsStatus status) {
         if (status == null)
             status = AdsStatus.ACTIVE;
+
         validateSearchInput(minPrice, maxPrice);
 
         List<Ads> foundAds = adsDao.searchAds(keyword, category, minPrice, maxPrice, status);
@@ -348,6 +351,16 @@ public class AdsService {
         isAdsExist(adsId, ads);
         validateUserPermissions(ads);
         validatePromotionDays(promotionDays);
+
+        User currentUser = getCurrentUser();
+        double totalCost = promotionDays * promotionDailyPrice;
+
+        if (currentUser.getBalance() < totalCost) {
+            throw new IllegalStateException("Insufficient funds. Required: " + totalCost + ", Available: " + currentUser.getBalance());
+        }
+
+        currentUser.setBalance(currentUser.getBalance() - totalCost);
+        userDao.update(currentUser);
 
         LocalDate now = LocalDate.now();
         ads.setPromoted(true);

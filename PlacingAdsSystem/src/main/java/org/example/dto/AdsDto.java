@@ -1,5 +1,6 @@
 package org.example.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.example.model.AdsStatus;
 
 import java.io.Serializable;

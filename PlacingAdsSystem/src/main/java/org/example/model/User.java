@@ -27,6 +27,8 @@ public class User {
     private List<Ads> advertisements;
     @OneToMany(mappedBy = "seller")
     private List<SaleHistory> sales = new ArrayList<>();
+    @Column(name = "user_balance")
+    private Double balance = 0.0;
     @Column(name = "user_picture")
     private byte[] profilePicture;
 
@@ -107,6 +109,14 @@ public class User {
         this.sales = sales;
     }
 
+    public Double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Double balance) {
+        this.balance = balance;
+    }
+
     public byte[] getProfilePicture() {
         return profilePicture;
     }
@@ -120,10 +130,11 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
                 ", sellerRating=" + sellerRating +
-                ", advertisements=" + advertisements +
+                ", balance=" + balance +
                 '}';
     }
 }

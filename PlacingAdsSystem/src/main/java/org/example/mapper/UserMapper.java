@@ -19,6 +19,7 @@ public interface UserMapper {
     @Mapping(target = "role", source = "role")
     @Mapping(target = "sellerRating", source = "sellerRating")
     @Mapping(target = "advertisementIds", source = "advertisements", qualifiedByName = "adsToIds")
+    @Mapping(target = "balance", source = "balance")
     @Mapping(target = "profilePicture", source = "profilePicture")
     UserDto toDto(User user);
 

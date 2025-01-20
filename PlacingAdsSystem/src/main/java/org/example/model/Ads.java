@@ -21,13 +21,11 @@ public class Ads {
     private String description;
     @Column(name = "ads_price", nullable = false)
     private Double price;
-    @ManyToOne()
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
     @Column(name = "ads_creation_date")
     private LocalDate creationDate;
-//    @Column(name = "ads_is_promoted")
-//    private boolean isPromoted;
     @Column(name = "ads_promotion_end_date")
     private LocalDate promotionEndDate;
     @OneToMany(mappedBy = "ads", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

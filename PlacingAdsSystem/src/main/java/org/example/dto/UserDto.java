@@ -12,6 +12,7 @@ public class UserDto implements Serializable {
     private String email;
     private UserRole role;
     private Double sellerRating;
+    private Double balance;
     private List<Long> advertisementIds;
     private byte[] profilePicture;
     private List<SaleHistoryDto> salesAsSeller;
@@ -59,6 +60,30 @@ public class UserDto implements Serializable {
 
     public byte[] getProfilePicture() {
         return profilePicture;
+    }
+
+    public Double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Double balance) {
+        this.balance = balance;
+    }
+
+    public List<SaleHistoryDto> getSalesAsSeller() {
+        return salesAsSeller;
+    }
+
+    public void setSalesAsSeller(List<SaleHistoryDto> salesAsSeller) {
+        this.salesAsSeller = salesAsSeller;
+    }
+
+    public List<SaleHistoryDto> getSalesAsBuyer() {
+        return salesAsBuyer;
+    }
+
+    public void setSalesAsBuyer(List<SaleHistoryDto> salesAsBuyer) {
+        this.salesAsBuyer = salesAsBuyer;
     }
 
     public void setProfilePicture(byte[] profilePicture) {

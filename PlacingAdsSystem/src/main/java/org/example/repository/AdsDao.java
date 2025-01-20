@@ -54,6 +54,7 @@ public class AdsDao extends GenericDao<Ads>{
                 .append("a.user.sellerRating DESC, a.creationDate DESC");
 
 
+
         TypedQuery<Ads> query = entityManager.createQuery(hql.toString(), Ads.class);
         parameters.forEach(query::setParameter);
 
