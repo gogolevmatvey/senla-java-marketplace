@@ -15,9 +15,12 @@ public class AdsDto implements Serializable {
     private Double price;
     private String username;
     private Double sellerRating;
+    @JsonFormat(pattern = "dd.MM.yyyy")
     private LocalDate creationDate;
     private boolean promoted;
+    @JsonFormat(pattern = "dd.MM.yyyy")
     private LocalDate promotionStartDate;
+    @JsonFormat(pattern = "dd.MM.yyyy")
     private LocalDate promotionEndDate;
     private AdsStatus status;
     private List<CommentDto> comments;

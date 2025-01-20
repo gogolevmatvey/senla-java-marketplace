@@ -1,5 +1,7 @@
 package org.example.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -8,6 +10,7 @@ public class MessageDto implements Serializable {
     private Long chatId;
     private String senderUsername;
     private String content;
+    @JsonFormat(pattern = "dd.MM.yyyy")
     private LocalDateTime sendDate;
 
     public Long getId() {

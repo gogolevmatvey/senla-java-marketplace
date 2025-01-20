@@ -1,5 +1,7 @@
 package org.example.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -9,6 +11,7 @@ public class CommentDto implements Serializable {
     private String content;
     private Integer rating;
     private String username;
+    @JsonFormat(pattern = "dd.MM.yyyy")
     private LocalDate creationDate;
 
     public Long getId() {

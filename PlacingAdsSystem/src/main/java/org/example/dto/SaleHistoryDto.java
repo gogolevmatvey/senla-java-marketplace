@@ -1,5 +1,7 @@
 package org.example.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -8,6 +10,7 @@ public class SaleHistoryDto implements Serializable {
     private String sellerUsername;
     private String buyerUsername;
     private String adsTitle;
+    @JsonFormat(pattern = "dd.MM.yyyy")
     private LocalDateTime saleDate;
     private Double salePrice;
 
