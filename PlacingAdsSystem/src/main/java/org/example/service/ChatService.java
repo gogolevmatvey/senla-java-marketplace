@@ -9,6 +9,8 @@ import org.example.repository.AdsDao;
 import org.example.repository.ChatDao;
 import org.example.repository.MessageDao;
 import org.example.repository.UserDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,7 @@ public class ChatService {
     private MessageDao messageDao;
     private ChatMapper chatMapper;
     private MessageMapper messageMapper;
+    private static final Logger logger = LoggerFactory.getLogger(ChatService.class);
 
     public ChatService(ChatDao chatDao, UserDao userDao, AdsDao adsDao, MessageDao messageDao, ChatMapper chatMapper,
                        MessageMapper messageMapper) {
@@ -48,6 +51,7 @@ public class ChatService {
 
         Chat chat = new Chat(ads, currentUser);
         chatDao.create(chat);
+        logger.info("Chat opened for ads {} by user {}", adsId, currentUser.getUsername());
         return chatMapper.toDto(chat);
     }
 
@@ -72,6 +76,7 @@ public class ChatService {
 
         Message message = new Message(chat, sender, receiver, content);
         messageDao.create(message);
+        logger.info("Message sent in chat for ads {} by user {}", adsId, sender.getUsername());
         return messageMapper.toDto(message);
     }
 
@@ -83,6 +88,7 @@ public class ChatService {
         message.setContent(newContent);
         messageDao.update(message);
 
+        logger.info("Message {} edited by user {}", messageId, getCurrentUser().getUsername());
         return messageMapper.toDto(message);
     }
 
@@ -103,7 +109,7 @@ public class ChatService {
         User currentUser = getCurrentUser();
 
         validateMessageSender(message);
-
+        logger.info("Message {} deleted by user {}", messageId, currentUser.getUsername());
         messageDao.delete(message.getId());
     }
 }
