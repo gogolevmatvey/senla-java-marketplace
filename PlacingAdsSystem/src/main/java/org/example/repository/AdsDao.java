@@ -21,7 +21,8 @@ public class AdsDao extends GenericDao<Ads>{
         super(Ads.class, entityManagerFactory);
     }
 
-    public List<Ads> searchAds(String keyword, String category, Double minPrice, Double maxPrice, AdsStatus status) {
+    public List<Ads> searchAds(String keyword, String category, Double minPrice, Double maxPrice, AdsStatus status,
+                               int page, int size) {
         StringBuilder hql = new StringBuilder("FROM Ads a WHERE 1=1");
         Map<String, Object> parameters = new HashMap<>();
 
@@ -54,10 +55,47 @@ public class AdsDao extends GenericDao<Ads>{
                 .append("a.user.sellerRating DESC, a.creationDate DESC");
 
 
-
         TypedQuery<Ads> query = entityManager.createQuery(hql.toString(), Ads.class);
         parameters.forEach(query::setParameter);
 
+        query.setFirstResult((page - 1) * size);
+        query.setMaxResults(size);
+
         return query.getResultList();
+    }
+
+    public Long getTotalCount(String keyword, String category, Double minPrice, Double maxPrice, AdsStatus status) {
+        StringBuilder hql = new StringBuilder("SELECT COUNT(a) FROM Ads a WHERE 1=1");
+        Map<String, Object> parameters = new HashMap<>();
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            hql.append(" AND (lower(a.title) like :keyword OR lower(a.description) like :keyword)");
+            parameters.put("keyword", "%" + keyword.toLowerCase() + "%");  //% для частичного совпадения
+        }
+
+        if (category != null && !category.trim().isEmpty()) {
+            hql.append(" AND lower(a.category) = :category");
+            parameters.put("category", category.toLowerCase());
+        }
+
+        if (minPrice != null) {
+            hql.append(" AND a.price >= :minPrice");
+            parameters.put("minPrice", minPrice);
+        }
+
+        if (maxPrice != null) {
+            hql.append(" AND a.price <= :maxPrice");
+            parameters.put("maxPrice", maxPrice);
+        }
+
+        if (status == AdsStatus.ACTIVE || status == AdsStatus.SOLD)
+            parameters.put("status", status);
+
+        hql.append(" AND a.status = :status");
+
+        TypedQuery<Long> countQuery = entityManager.createQuery(hql.toString(), Long.class);
+        parameters.forEach(countQuery::setParameter);
+
+        return countQuery.getSingleResult();
     }
 }

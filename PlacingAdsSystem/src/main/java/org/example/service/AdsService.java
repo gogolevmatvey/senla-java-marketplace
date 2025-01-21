@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.dto.AdsDto;
 import org.example.dto.CommentDto;
+import org.example.dto.PageResponse;
 import org.example.exceptions.AdsNotFoundException;
 import org.example.mapper.AdsMapper;
 import org.example.mapper.CommentMapper;
@@ -363,15 +364,20 @@ public class AdsService {
         return adsMapper.toDto(ads);
     }
 
-    public List<AdsDto> searchAds(String keyword, String category, Double minPrice, Double maxPrice, AdsStatus status) {
+    public PageResponse<AdsDto> searchAds(String keyword, String category, Double minPrice, Double maxPrice, AdsStatus status,
+                                          int page, int size) {
         if (status == null)
             status = AdsStatus.ACTIVE;
 
         validateSearchInput(minPrice, maxPrice);
+        validatePaginationParams(page, size);
 
-        List<Ads> foundAds = adsDao.searchAds(keyword, category, minPrice, maxPrice, status);
+        List<Ads> foundAds = adsDao.searchAds(keyword, category, minPrice, maxPrice, status, page, size);
+        Long totalElements = adsDao.getTotalCount(keyword, category, minPrice, maxPrice, status);
 
-        return foundAds.stream().map(adsMapper::toDto).collect(Collectors.toList());
+        List<AdsDto> adsDtos = foundAds.stream().map(adsMapper::toDto).collect(Collectors.toList());
+
+        return new PageResponse<>(adsDtos, page, size, totalElements);
     }
 
     private void validateSearchInput(Double minPrice, Double maxPrice) {
@@ -385,6 +391,15 @@ public class AdsService {
 
         if (maxPrice != null && maxPrice < 0) {
             throw new IllegalArgumentException("Maximum price can't be negative");
+        }
+    }
+
+    private void validatePaginationParams(int page, int size) {
+        if (page < 1) {
+            throw new IllegalArgumentException("Page number must be greater than 0");
+        }
+        if (size < 1 || size > 100) {
+            throw new IllegalArgumentException("Page size must be between 1 and 100");
         }
     }
 

@@ -86,15 +86,17 @@ public class AdsController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<AdsDto>> searchAds(
+    public ResponseEntity<PageResponse<AdsDto>> searchAds(
             @RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam(name = "category", required = false) String category,
             @RequestParam(name = "minPrice", required = false) Double minPrice,
             @RequestParam(name = "maxPrice", required = false) Double maxPrice,
-            @RequestParam(name = "status", required = false) AdsStatus status) {
+            @RequestParam(name = "status", required = false) AdsStatus status,
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
 
-        List<AdsDto> ads = adsService.searchAds(keyword, category, minPrice, maxPrice, status);
-        return ResponseEntity.ok(ads);
+        PageResponse<AdsDto> pagedResult = adsService.searchAds(keyword, category, minPrice, maxPrice, status, page, size);
+        return ResponseEntity.ok(pagedResult);
     }
 
     @PostMapping("/{adsId}/promote")
