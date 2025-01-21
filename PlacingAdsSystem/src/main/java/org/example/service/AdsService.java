@@ -364,15 +364,15 @@ public class AdsService {
         return adsMapper.toDto(ads);
     }
 
-    public PageResponse<AdsDto> searchAds(String keyword, String category, Double minPrice, Double maxPrice, AdsStatus status,
-                                          int page, int size) {
+    public PageResponse<AdsDto> searchAds(String keyword, String category, Double minPrice, Double maxPrice,
+                                          AdsStatus status, String priceSort, int page, int size) {
         if (status == null)
             status = AdsStatus.ACTIVE;
 
         validateSearchInput(minPrice, maxPrice);
         validatePaginationParams(page, size);
 
-        List<Ads> foundAds = adsDao.searchAds(keyword, category, minPrice, maxPrice, status, page, size);
+        List<Ads> foundAds = adsDao.searchAds(keyword, category, minPrice, maxPrice, status, priceSort, page, size);
         Long totalElements = adsDao.getTotalCount(keyword, category, minPrice, maxPrice, status);
 
         List<AdsDto> adsDtos = foundAds.stream().map(adsMapper::toDto).collect(Collectors.toList());

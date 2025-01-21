@@ -22,7 +22,7 @@ public class AdsDao extends GenericDao<Ads>{
     }
 
     public List<Ads> searchAds(String keyword, String category, Double minPrice, Double maxPrice, AdsStatus status,
-                               int page, int size) {
+                               String priceSort, int page, int size) {
         StringBuilder hql = new StringBuilder("FROM Ads a WHERE 1=1");
         Map<String, Object> parameters = new HashMap<>();
 
@@ -51,9 +51,17 @@ public class AdsDao extends GenericDao<Ads>{
 
         hql.append(" AND a.status = :status");
 
-        hql.append(" ORDER BY CASE WHEN a.promoted = true AND a.promotionEndDate >= CURRENT_DATE THEN 1 ELSE 0 END DESC, ")
-                .append("a.user.sellerRating DESC, a.creationDate DESC");
+        hql.append(" ORDER BY CASE WHEN a.promoted = true AND a.promotionEndDate >= CURRENT_DATE THEN 1 ELSE 0 END DESC");
 
+        if (priceSort != null) {
+            if ("asc".equalsIgnoreCase(priceSort)) {
+                hql.append(", a.price ASC");
+            } else if ("desc".equalsIgnoreCase(priceSort)) {
+                hql.append(", a.price DESC");
+            }
+        }
+
+        hql.append(", a.user.sellerRating DESC, a.creationDate DESC");
 
         TypedQuery<Ads> query = entityManager.createQuery(hql.toString(), Ads.class);
         parameters.forEach(query::setParameter);

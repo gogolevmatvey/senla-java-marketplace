@@ -92,10 +92,12 @@ public class AdsController {
             @RequestParam(name = "minPrice", required = false) Double minPrice,
             @RequestParam(name = "maxPrice", required = false) Double maxPrice,
             @RequestParam(name = "status", required = false) AdsStatus status,
+            @RequestParam(name = "priceSort", required = false) String priceSort,
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
 
-        PageResponse<AdsDto> pagedResult = adsService.searchAds(keyword, category, minPrice, maxPrice, status, page, size);
+        PageResponse<AdsDto> pagedResult = adsService.searchAds(keyword, category, minPrice, maxPrice, status,
+                priceSort, page, size);
         return ResponseEntity.ok(pagedResult);
     }
 
