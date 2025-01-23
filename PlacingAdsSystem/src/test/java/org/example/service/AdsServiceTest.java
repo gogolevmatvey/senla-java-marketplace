@@ -16,6 +16,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -66,6 +69,81 @@ public class AdsServiceTest {
 //        when(securityContext.getAuthentication()).thenReturn(authentication);
 //        when(authentication.getName()).thenReturn("testUser");
 //        when(userDao.findUserByUsername("testUser")).thenReturn(testUser);
+    }
+
+    @Test
+    void createAds_SuccessfulCreation() {
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("testUser");
+        when(userDao.findUserByUsername("testUser")).thenReturn(testUser);
+
+        AdsDto adsDto = new AdsDto();
+        adsDto.setTitle("New Ad");
+        adsDto.setDescription("New Description");
+        adsDto.setPrice(50.0);
+        adsDto.setCategory("Test Category");
+
+        Ads newAds = new Ads();
+        newAds.setTitle("New Ad");
+        newAds.setDescription("New Description");
+        newAds.setPrice(50.0);
+        newAds.setCategory("Test Category");
+
+        when(adsMapper.toEntity(adsDto)).thenReturn(newAds);
+        when(adsMapper.toDto(newAds)).thenReturn(adsDto);
+
+        AdsDto result = adsService.createAds(adsDto);
+
+        assertNotNull(result);
+        verify(adsDao).create(any(Ads.class));
+    }
+
+    @Test
+    void markAsSold_SuccessfulMarking() {
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("testUser");
+        when(userDao.findUserByUsername("testUser")).thenReturn(testUser);
+
+        User buyer = new User();
+        buyer.setUsername("buyer");
+
+        when(adsDao.read(1L)).thenReturn(testAds);
+        when(userDao.findUserByUsername("buyer")).thenReturn(buyer);
+
+        adsService.markAsSold(1L, "buyer");
+
+        assertEquals(AdsStatus.SOLD, testAds.getStatus());
+        assertEquals(buyer, testAds.getBuyer());
+        verify(saleHistoryDao).create(any(SaleHistory.class));
+    }
+
+    @Test
+    void setMainImage_SuccessfulImageUpdate() throws IOException {
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("testUser");
+        when(userDao.findUserByUsername("testUser")).thenReturn(testUser);
+        when(adsDao.read(1L)).thenReturn(testAds);
+
+        MultipartFile mockFile = mock(MultipartFile.class);
+        when(mockFile.getContentType()).thenReturn("image/jpeg");
+        when(mockFile.isEmpty()).thenReturn(false);
+        when(mockFile.getBytes()).thenReturn(new byte[]{1, 2, 3});
+
+        adsService.setMainImage(1L, mockFile);
+
+        verify(adsDao).update(testAds);
+        assertArrayEquals(new byte[]{1, 2, 3}, testAds.getMainImage());
+    }
+
+    @Test
+    void getAdsById_SuccessfulRetrieval() {
+        when(adsDao.read(1L)).thenReturn(testAds);
+        when(adsMapper.toDto(testAds)).thenReturn(new AdsDto());
+
+        AdsDto result = adsService.getAdsById(1L);
+
+        assertNotNull(result);
+        verify(adsMapper).toDto(testAds);
     }
 
     @Test

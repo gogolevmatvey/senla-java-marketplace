@@ -9,6 +9,9 @@ public class PageResponse<T> {
     private int totalPages;
     private List<T> content;
 
+    public PageResponse() {
+    }
+
     public PageResponse(List<T> content, int currentPage, int pageSize, long totalElements) {
         this.content = content;
         this.currentPage = currentPage;
