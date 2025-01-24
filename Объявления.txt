@@ -1,0 +1,142 @@
+{
+  "title": "iPhone 13 Pro Max 256GB",
+  "category": "Electronics",
+  "description": "Perfect condition, used for 6 months, comes with original box and accessories",
+  "price": 899.99
+}
+
+{
+  "title": "Mountain Bike Trek X-Caliber 8",
+  "category": "Sports",
+  "description": "2022 model, hydraulic disc brakes, front suspension, size L",
+  "price": 749.50
+}
+
+{
+  "title": "Vintage Leather Sofa",
+  "category": "Furniture",
+  "description": "Genuine brown leather, 3-seater, minor wear, very comfortable",
+  "price": 450.00
+}
+
+{
+  "title": "Programming Books Collection",
+  "category": "Books",
+  "description": "15 books including Clean Code, Design Patterns, and Spring in Action",
+  "price": 199.99
+}
+
+{
+  "title": "Gaming PC RTX 3080",
+  "category": "Electronics",
+  "description": "Custom built: Ryzen 9 5900X, 32GB RAM, 2TB SSD, RTX 3080",
+  "price": 1899.99
+}
+
+{
+  "title": "Acoustic Guitar Yamaha FG800",
+  "category": "Musical Instruments",
+  "description": "Solid spruce top, rosewood fingerboard, excellent condition",
+  "price": 299.99
+}
+
+{
+  "title": "Professional Camera Canon EOS R6",
+  "category": "Photography",
+  "description": "Mirrorless camera, 20MP, 4K video, includes 24-105mm lens",
+  "price": 2499.99
+}
+
+{
+  "title": "Antique Wooden Desk",
+  "category": "Furniture",
+  "description": "19th century oak desk, excellent condition, original hardware",
+  "price": 850.00
+}
+
+{
+  "title": "Nintendo Switch OLED",
+  "category": "Gaming",
+  "description": "White model, includes 3 games and pro controller",
+  "price": 379.99
+}
+
+{
+  "title": "Designer Handbag Louis Vuitton",
+  "category": "Fashion",
+  "description": "Authentic Neverfull MM, receipt included, like new condition",
+  "price": 1200.00
+}
+
+{
+  "title": "Electric Scooter Xiaomi Pro 2",
+  "category": "Transportation",
+  "description": "Max speed 25km/h, range 45km, barely used",
+  "price": 449.99
+}
+
+{
+  "title": "Camping Tent 4-Person",
+  "category": "Outdoor",
+  "description": "Waterproof, double-layer, includes rainfly and footprint",
+  "price": 199.50
+}
+
+{
+  "title": "Smart Watch Apple Series 7",
+  "category": "Electronics",
+  "description": "GPS + Cellular, 45mm, midnight aluminum case",
+  "price": 429.99
+}
+
+{
+  "title": "Vintage Vinyl Records Collection",
+  "category": "Music",
+  "description": "50 classic rock albums from 60s-80s, excellent condition",
+  "price": 599.99
+}
+
+{
+  "title": "Professional Chef Knife Set",
+  "category": "Kitchen",
+  "description": "8-piece German steel set with wooden block",
+  "price": 299.99
+}
+
+{
+  "title": "Road Bike Specialized Tarmac",
+  "category": "Sports",
+  "description": "Carbon frame, Shimano 105 groupset, size 56cm",
+  "price": 2199.99
+}
+
+{
+  "title": "MacBook Pro M1 Pro",
+  "category": "Electronics",
+  "description": "14-inch, 16GB RAM, 512GB SSD, AppleCare+ until 2024",
+  "price": 1799.99
+}
+
+{
+  "title": "Oil Painting Original",
+  "category": "Art",
+  "description": "Landscape scene, 24x36 inches, signed by artist",
+  "price": 750.00
+}
+
+{
+  "title": "Drone DJI Air 2S",
+  "category": "Electronics",
+  "description": "4K camera, 3-axis gimbal, fly more combo",
+  "price": 999.99
+}
+
+{
+  "title": "Luxury Watch Omega Seamaster",
+  "category": "Accessories",
+  "description": "Automatic movement, blue dial, full set with papers",
+  "price": 4500.00
+}
+
+
+
