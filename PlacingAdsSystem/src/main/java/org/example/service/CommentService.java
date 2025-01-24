@@ -18,10 +18,10 @@ import java.time.LocalDate;
 @Service
 @Transactional
 public class CommentService {
-    private AdsDao adsDao;
-    private UserDao userDao;
-    private CommentDao commentDao;
-    private CommentMapper commentMapper;
+    private final AdsDao adsDao;
+    private final UserDao userDao;
+    private final CommentDao commentDao;
+    private final CommentMapper commentMapper;
     private static final Logger logger = LoggerFactory.getLogger(CommentService.class);
 
     public CommentService(AdsDao adsDao, UserDao userDao, CommentDao commentDao, CommentMapper commentMapper) {

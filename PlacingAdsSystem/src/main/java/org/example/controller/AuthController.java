@@ -1,25 +1,19 @@
 package org.example.controller;
 
-import org.example.dto.ErrorResponse;
 import org.example.dto.JwtResponse;
 import org.example.dto.LoginRequest;
 import org.example.dto.RegisterRequest;
 import org.example.exceptions.UserAlreadyExistsException;
-import org.example.service.AdsService;
 import org.example.service.CustomUserDetailsService;
 import org.example.service.JwtService;
 import org.example.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

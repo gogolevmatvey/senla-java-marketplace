@@ -1,6 +1,5 @@
 package org.example.dto;
 
-import org.example.model.SaleHistory;
 import org.example.model.UserRole;
 
 import java.io.Serializable;

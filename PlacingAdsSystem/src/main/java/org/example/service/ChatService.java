@@ -18,12 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ChatService {
-    private ChatDao chatDao;
-    private UserDao userDao;
-    private AdsDao adsDao;
-    private MessageDao messageDao;
-    private ChatMapper chatMapper;
-    private MessageMapper messageMapper;
+    private final ChatDao chatDao;
+    private final UserDao userDao;
+    private final AdsDao adsDao;
+    private final MessageDao messageDao;
+    private final ChatMapper chatMapper;
+    private final MessageMapper messageMapper;
     private static final Logger logger = LoggerFactory.getLogger(ChatService.class);
 
     public ChatService(ChatDao chatDao, UserDao userDao, AdsDao adsDao, MessageDao messageDao, ChatMapper chatMapper,

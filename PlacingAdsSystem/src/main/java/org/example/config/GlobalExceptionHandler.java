@@ -1,7 +1,6 @@
 package org.example.config;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.example.dto.ErrorResponse;
 import org.example.exceptions.AdsNotFoundException;
 import org.example.exceptions.CommentNotFoundException;

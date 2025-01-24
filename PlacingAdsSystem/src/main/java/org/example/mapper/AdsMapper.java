@@ -4,7 +4,6 @@ import org.example.dto.AdsDto;
 import org.example.model.Ads;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 

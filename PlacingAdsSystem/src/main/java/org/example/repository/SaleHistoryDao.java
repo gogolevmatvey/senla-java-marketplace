@@ -2,7 +2,6 @@ package org.example.repository;
 
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
-import org.example.dto.SaleHistoryDto;
 import org.example.model.SaleHistory;
 import org.springframework.stereotype.Repository;
 

@@ -1,14 +1,13 @@
 package org.example.controller;
 
 import org.example.dto.CommentDto;
-import org.example.dto.MessageResponse;
 import org.example.service.CommentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class CommentController {
-    private CommentService commentService;
+    private final CommentService commentService;
 
     public CommentController(CommentService commentService) {
         this.commentService = commentService;

@@ -1,14 +1,11 @@
 package org.example.service;
 
 import org.example.dto.AdsDto;
-import org.example.dto.CommentDto;
 import org.example.dto.PageResponse;
 import org.example.exceptions.AdsNotFoundException;
 import org.example.mapper.AdsMapper;
-import org.example.mapper.CommentMapper;
 import org.example.model.*;
 import org.example.repository.AdsDao;
-import org.example.repository.CommentDao;
 import org.example.repository.SaleHistoryDao;
 import org.example.repository.UserDao;
 import org.slf4j.Logger;
@@ -27,10 +24,10 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class AdsService {
-    private AdsDao adsDao;
-    private UserDao userDao;
-    private SaleHistoryDao saleHistoryDao;
-    private AdsMapper adsMapper;
+    private final AdsDao adsDao;
+    private final UserDao userDao;
+    private final SaleHistoryDao saleHistoryDao;
+    private final AdsMapper adsMapper;
     private static final Logger logger = LoggerFactory.getLogger(AdsService.class);
 
     @Value("${ads.title.max-length}")

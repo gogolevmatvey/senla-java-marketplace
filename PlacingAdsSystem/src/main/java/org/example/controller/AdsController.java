@@ -7,12 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/ads")
 public class AdsController {
-    private AdsService adsService;
+    private final AdsService adsService;
 
     public AdsController(AdsService adsService) {
         this.adsService = adsService;

@@ -1,7 +1,6 @@
 package org.example.dto;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 public class ErrorResponse implements Serializable {
     private String message;

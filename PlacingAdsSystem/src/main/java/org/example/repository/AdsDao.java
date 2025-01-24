@@ -7,7 +7,6 @@ import org.example.model.AdsStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.Map;
 
 @Repository
 public class AdsDao extends GenericDao<Ads>{
-    private static final Logger logger = LoggerFactory.getLogger(UserDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(AdsDao.class);
 
     public AdsDao(EntityManagerFactory entityManagerFactory) {
         super(Ads.class, entityManagerFactory);

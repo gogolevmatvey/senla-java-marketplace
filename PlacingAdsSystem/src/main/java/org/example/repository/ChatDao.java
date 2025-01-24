@@ -3,7 +3,6 @@ package org.example.repository;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
-import org.example.model.Ads;
 import org.example.model.Chat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
