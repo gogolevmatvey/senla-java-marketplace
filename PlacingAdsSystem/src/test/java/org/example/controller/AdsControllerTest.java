@@ -2,6 +2,7 @@ package org.example.controller;
 
 import org.example.dto.AdsDto;
 import org.example.dto.PageResponse;
+import org.example.dto.UsernameDto;
 import org.example.model.AdsStatus;
 import org.example.service.AdsService;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +37,46 @@ public class AdsControllerTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(adsController).build();
+    }
+
+    @Test
+    void updateAds_ShouldReturnUpdatedAds() throws Exception {
+        AdsDto inputDto = new AdsDto();
+        inputDto.setTitle("Updated Title");
+
+        AdsDto updatedDto = new AdsDto();
+        updatedDto.setId(1L);
+        updatedDto.setTitle("Updated Title");
+
+        when(adsService.updateAds(eq(1L), any(AdsDto.class))).thenReturn(updatedDto);
+
+        mockMvc.perform(patch("/ads/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"title\":\"Updated Title\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.title").value("Updated Title"));
+    }
+
+    @Test
+    void markAsSold_ShouldReturnAdsWithBuyerUsername() throws Exception {
+        UsernameDto usernameDto = new UsernameDto();
+        usernameDto.setUsername("buyerUser");
+
+        AdsDto updatedDto = new AdsDto();
+        updatedDto.setId(1L);
+        updatedDto.setUsername("buyerUser");
+        updatedDto.setStatus(AdsStatus.SOLD);
+
+        when(adsService.markAsSold(eq(1L), eq("buyerUser"))).thenReturn(updatedDto);
+
+        mockMvc.perform(post("/ads/1/mark-sold")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"buyerUser\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.username").value("buyerUser"))
+                .andExpect(jsonPath("$.status").value("SOLD"));
     }
 
     @Test
