@@ -33,7 +33,7 @@ REST API учебного маркетплейса для публикации, 
 
 ```text
 .
-├── PlacingAdsSystem/              # Maven-модуль приложения
+├── marketplace-api/               # Maven-модуль приложения
 │   └── src/main/java/org/example/
 │       ├── controller/            # HTTP-эндпоинты
 │       ├── service/               # бизнес-логика
@@ -58,7 +58,7 @@ REST API учебного маркетплейса для публикации, 
 
 ### 1. Настройка БД
 
-Проверьте параметры подключения в [`PlacingAdsSystem/src/main/resources/application.properties`](PlacingAdsSystem/src/main/resources/application.properties). Для локального запуска PostgreSQL должен быть доступен по указанному адресу.
+Проверьте параметры подключения в [`marketplace-api/src/main/resources/application.properties`](marketplace-api/src/main/resources/application.properties). Для локального запуска PostgreSQL должен быть доступен по указанному адресу.
 
 ### 2. Создание базы данных
 
@@ -73,12 +73,12 @@ create_db.bat
 ### 3. Проверка и сборка
 
 ```bash
-cd PlacingAdsSystem
+cd marketplace-api
 mvn test
 mvn package
 ```
 
-Собранный архив будет расположен по пути `PlacingAdsSystem/target/PlacingAdsSystem.war`.
+Собранный архив будет расположен по пути `marketplace-api/target/marketplace-api.war`.
 
 ### 4. Развёртывание в Tomcat
 
@@ -122,6 +122,6 @@ Content-Type: application/json
 В проекте есть unit-тесты контроллеров и сервисов, написанные с использованием JUnit 5, Mockito и Spring Test.
 
 ```bash
-cd PlacingAdsSystem
+cd marketplace-api
 mvn test
 ```

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>PlacingAdsSystem</artifactId>
+    <artifactId>marketplace-api</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
@@ -255,7 +255,7 @@
     </dependencies>
 
     <build>
-        <finalName>PlacingAdsSystem</finalName>
+        <finalName>marketplace-api</finalName>
 
         <plugins>
             <plugin>
